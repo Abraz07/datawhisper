@@ -56,9 +56,16 @@ def df_summary(df):
     columns = f"Columns: {list(df.columns)}"
     dtypes = f"Dtypes:\n{df.dtypes.to_string()}"
     sample = f"Sample:\n{df.head(5).to_string()}"
-    nulls = f"Nulls:\n{df.isnull().sum().to_string()}"
-    numeric_cols = df.select_dtypes(include="number").columns.tolist()
-    stats = f"Stats:\n{df[numeric_cols].describe().to_string()}" if numeric_cols else ""
+    
+    if len(df) > 10_000:
+        sample_df = df.sample(n=10_000, random_state=42)
+        nulls = f"Nulls (from 10k sample):\n{sample_df.isnull().sum().to_string()}"
+        numeric_cols = sample_df.select_dtypes(include="number").columns.tolist()
+        stats = f"Stats (from 10k sample):\n{sample_df[numeric_cols].describe().to_string()}" if numeric_cols else ""
+    else:
+        nulls = f"Nulls:\n{df.isnull().sum().to_string()}"
+        numeric_cols = df.select_dtypes(include="number").columns.tolist()
+        stats = f"Stats:\n{df[numeric_cols].describe().to_string()}" if numeric_cols else ""
     return f"{shape}\n{columns}\n{dtypes}\n{sample}\n{nulls}\n{stats}"
 
 def generate_suggestions(df):
@@ -71,7 +78,8 @@ def generate_suggestions(df):
     categorical = df.select_dtypes(include=["object", "category", "string"]).columns.tolist()
     datetime_cols = df.select_dtypes(include=["datetime64", "datetimetz"]).columns.tolist()
 
-    null_cols = [c for c in df.columns if df[c].isnull().any()]
+    null_series = df.isnull().any()
+    null_cols = null_series[null_series].index.tolist()
     if null_cols:
         suggestions.append(f"Which columns have missing values?")
 
@@ -79,8 +87,9 @@ def generate_suggestions(df):
         suggestions.append(f"What is the average of '{str(numeric[0])}'?")
         suggestions.append("Show me a summary of all numeric columns")
 
+    cat_sample = df if len(df) <= 5000 else df.sample(n=5000, random_state=42)
     for col in categorical:
-        nunique = df[col].nunique(dropna=True)
+        nunique = cat_sample[col].nunique(dropna=True)
         if 2 <= nunique <= 40:
             suggestions.append(f"Show me a bar chart of '{str(col)}'")
             break
@@ -110,11 +119,12 @@ def validate_dataframe(df):
             detail=f"Dataset has {df.shape[1]} columns — maximum is {MAX_COLUMNS}.",
         )
 
-def load_dataframe(contents: bytes, ext: str, sheet: str | None = None) -> pd.DataFrame:
-    buf = io.BytesIO(contents)
+def load_dataframe(contents: bytes, ext: str, sheet: str | None = None, excel_file: pd.ExcelFile | None = None) -> pd.DataFrame:
     if ext == "csv":
-        return pd.read_csv(buf)
-    return pd.read_excel(buf, sheet_name=sheet or 0)
+        return pd.read_csv(io.BytesIO(contents))
+    if excel_file is not None:
+        return pd.read_excel(excel_file, sheet_name=sheet or 0)
+    return pd.read_excel(io.BytesIO(contents), sheet_name=sheet or 0)
 
 def preview_records(df: pd.DataFrame) -> list[dict]:
     preview = df.head(5).copy()
@@ -414,15 +424,16 @@ async def upload_file(file: UploadFile = File(...), sheet: str | None = Form(Non
                 status_code=400,
                 detail=f"File too large ({len(contents) // (1024 * 1024)} MB). Maximum is {MAX_FILE_BYTES // (1024 * 1024)} MB.",
             )
-        if ext in ("xlsx", "xls") and not sheet:
+        excel_file = None
+        if ext in ("xlsx", "xls"):
             try:
-                excel = pd.ExcelFile(io.BytesIO(contents))
-                sheets = excel.sheet_names
+                excel_file = pd.ExcelFile(io.BytesIO(contents))
+                sheets = excel_file.sheet_names
             except Exception as e:
                 raise HTTPException(status_code=400, detail=f"Could not read Excel file: {e}")
-            if len(sheets) > 1:
+            if not sheet and len(sheets) > 1:
                 return {"needs_sheet": True, "sheets": sheets, "filename": file.filename}
-        df = load_dataframe(contents, ext, sheet)
+        df = load_dataframe(contents, ext, sheet, excel_file=excel_file)
         validate_dataframe(df)
         return create_session(file.filename, df, sheet)
     except HTTPException:

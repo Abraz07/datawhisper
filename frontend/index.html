@@ -100,6 +100,28 @@
       color: var(--text2); border: 1px solid var(--border);
       border-radius: 20px; padding: 5px 12px;
       background: var(--surface2);
+      display: inline-flex; align-items: center; gap: 6px;
+      transition: all 0.3s;
+    }
+    .status-dot {
+      width: 6px; height: 6px; border-radius: 50%; display: inline-block;
+    }
+    .status-dot.ready {
+      background: var(--accent3);
+      box-shadow: 0 0 8px var(--accent3);
+    }
+    .status-dot.waking, .status-dot.checking {
+      background: #f59e0b;
+      box-shadow: 0 0 8px #f59e0b;
+      animation: pulse-waking 1.5s infinite;
+    }
+    .status-dot.error {
+      background: var(--danger);
+      box-shadow: 0 0 8px var(--danger);
+    }
+    @keyframes pulse-waking {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50% { opacity: 0.35; transform: scale(0.85); }
     }
 
     /* Theme toggle */
@@ -358,9 +380,10 @@
 <div id="root"></div>
 <script type="text/babel">
 const { useState, useRef, useEffect } = React;
-const API = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1')
-  ? 'http://localhost:8000'
-  : 'https://queryza.onrender.com';
+const isLocal = window.location.hostname === 'localhost' || 
+                window.location.hostname === '127.0.0.1' || 
+                window.location.protocol === 'file:';
+const API = isLocal ? 'http://localhost:8000' : 'https://queryza.onrender.com';
 
 const DEFAULT_SUGGESTIONS = [
   'What are the column names and their data types?',
@@ -449,11 +472,37 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [sheetPicker, setSheetPicker] = useState(null);
+  const [serverStatus, setServerStatus] = useState('checking'); // 'checking' | 'waking' | 'ready' | 'error'
   const messagesEnd = useRef();
   const textareaRef = useRef();
 
   useEffect(() => { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
   useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
+
+  // Background server pre-warming on page load
+  useEffect(() => {
+    let isMounted = true;
+    const timer = setTimeout(() => {
+      if (isMounted) setServerStatus(s => s === 'ready' ? 'ready' : 'waking');
+    }, 1200);
+
+    const checkHealth = async () => {
+      try {
+        const res = await fetch(`${API}/health`, { cache: 'no-store' });
+        if (res.ok && isMounted) {
+          setServerStatus('ready');
+        } else if (isMounted) {
+          setServerStatus('error');
+        }
+      } catch (e) {
+        if (isMounted) setServerStatus('error');
+      } finally {
+        clearTimeout(timer);
+      }
+    };
+    checkHealth();
+    return () => { isMounted = false; clearTimeout(timer); };
+  }, []);
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
@@ -462,6 +511,7 @@ function App() {
     setMessages([]);
     setSidebarOpen(false);
     setSheetPicker(null);
+    setServerStatus('ready');
   };
 
   const uploadForm = async (form) => {
@@ -569,7 +619,13 @@ function App() {
           <div className="logo-name">Query<em>za</em></div>
         </div>
         <div className="header-right">
-          <div className="header-pill">Talk to your CSV / Excel</div>
+          <div className="header-pill">
+            <span className={`status-dot ${serverStatus}`}></span>
+            {serverStatus === 'waking' ? 'Waking up AI engine...' : 
+             serverStatus === 'ready' ? 'AI Engine Ready' : 
+             serverStatus === 'error' ? 'Server connecting...' : 
+             'Checking AI engine...'}
+          </div>
           <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
             {theme === 'dark' ? '☀️' : '🌙'}
           </button>
@@ -594,7 +650,9 @@ function App() {
                 onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}>
                 <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
                 <span className="upload-icon">{uploading ? '⏳' : '📊'}</span>
-                <div className="upload-title">{uploading ? 'Uploading...' : 'Drop your file here'}</div>
+                <div className="upload-title">
+                  {uploading ? (serverStatus === 'waking' ? 'Waking up server & uploading...' : 'Uploading...') : 'Drop your file here'}
+                </div>
                 <div className="upload-sub">CSV, XLSX, XLS · max 25 MB</div>
               </div>
             ) : (
@@ -655,7 +713,11 @@ function App() {
                 onDragLeave={() => setDragOver(false)}
                 onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}>
                 <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
-                <div className="empty-upload-text">{uploading ? '⏳ Uploading...' : '📊 Click or drop your file here — Get started free'}</div>
+                <div className="empty-upload-text">
+                  {uploading 
+                    ? (serverStatus === 'waking' ? '⏳ Waking up AI engine & loading file (almost ready)...' : '⏳ Uploading & analyzing file...') 
+                    : '📊 Click or drop your file here — Get started free'}
+                </div>
               </div>
             </div>
           ) : (
