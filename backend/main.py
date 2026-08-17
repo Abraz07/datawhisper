@@ -16,7 +16,7 @@ MAX_FILE_BYTES = 25 * 1024 * 1024
 MAX_ROWS = 100_000
 MAX_COLUMNS = 500
 MAX_CODE_RETRIES = 2
-LLM_MODELS = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-2.0-flash-lite"]
+LLM_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
 
 app = FastAPI(title="Queryza API")
 app.add_middleware(
@@ -324,8 +324,7 @@ def extract_llm_text(response) -> str:
             return "\n".join(texts).strip()
     raise ValueError("Model returned no text. Please try again.")
 
-def generate_llm_code(system_prompt: str, user_prompt: str) -> str:
-    prompt = f"{system_prompt}\n\n{user_prompt}"
+def generate_llm_response(prompt: str) -> str:
     last_err = None
     for model in LLM_MODELS:
         try:
@@ -335,6 +334,10 @@ def generate_llm_code(system_prompt: str, user_prompt: str) -> str:
             last_err = e
             print(f"LLM {model} failed: {e}")
     raise HTTPException(status_code=500, detail=f"AI service unavailable: {last_err}")
+
+def generate_llm_code(system_prompt: str, user_prompt: str) -> str:
+    prompt = f"{system_prompt}\n\n{user_prompt}"
+    return generate_llm_response(prompt)
 
 def run_analytical_query(session, question: str) -> QueryResponse:
     df = session["df"]
@@ -484,8 +487,7 @@ Write a SHORT, FRIENDLY, plain English description of what this dataset is about
 - Do NOT use technical jargon or Python terms
 - Do NOT write any code"""
         try:
-            response = client.models.generate_content(model=LLM_MODELS[0], contents=conversational_prompt)
-            answer = extract_llm_text(response)
+            answer = generate_llm_response(conversational_prompt)
         except Exception as e:
             answer = f"This dataset has {df.shape[0]:,} rows and {df.shape[1]} columns with the following fields: {', '.join(str(c) for c in df.columns.tolist())}."
         session["history"].append({"role": "user", "content": request.question})
