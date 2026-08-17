@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="dark">
+<html lang="en" data-theme="dark" data-accent="emerald">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
@@ -20,23 +20,20 @@
       --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
+    /* ---- DARK THEME BASE ---- */
     [data-theme="dark"] {
-      --bg: #080a0f;
-      --bg-subtle: #0d111a;
-      --surface: #121724;
-      --surface-hover: #182032;
-      --surface-active: #1e273d;
-      --surface-elevated: #151b2a;
+      --bg: #07090e;
+      --bg-subtle: #0c1017;
+      --surface: #111622;
+      --surface-hover: #171e2e;
+      --surface-active: #1d263b;
+      --surface-elevated: #141b29;
       --border: rgba(255, 255, 255, 0.08);
       --border-subtle: rgba(255, 255, 255, 0.04);
       --border-hover: rgba(255, 255, 255, 0.16);
       --text-primary: #f8fafc;
       --text-secondary: #94a3b8;
       --text-muted: #64748b;
-      --accent: #3b82f6;
-      --accent-hover: #2563eb;
-      --accent-subtle: rgba(59, 130, 246, 0.12);
-      --accent-text: #60a5fa;
       --emerald: #10b981;
       --emerald-subtle: rgba(16, 185, 129, 0.12);
       --amber: #f59e0b;
@@ -46,10 +43,11 @@
       --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
       --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-      --glass-bg: rgba(18, 23, 36, 0.85);
+      --glass-bg: rgba(17, 22, 34, 0.85);
       --table-stripe: rgba(255, 255, 255, 0.02);
     }
 
+    /* ---- LIGHT THEME BASE ---- */
     [data-theme="light"] {
       --bg: #f8fafc;
       --bg-subtle: #f1f5f9;
@@ -63,10 +61,6 @@
       --text-primary: #0f172a;
       --text-secondary: #475569;
       --text-muted: #94a3b8;
-      --accent: #2563eb;
-      --accent-hover: #1d4ed8;
-      --accent-subtle: rgba(37, 99, 235, 0.08);
-      --accent-text: #2563eb;
       --emerald: #059669;
       --emerald-subtle: rgba(5, 150, 105, 0.08);
       --amber: #d97706;
@@ -78,6 +72,107 @@
       --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
       --glass-bg: rgba(255, 255, 255, 0.85);
       --table-stripe: rgba(0, 0, 0, 0.015);
+    }
+
+    /* ---- ACCENT PALETTES ---- */
+    /* 1. Cyber Jade (Emerald) - Default */
+    [data-accent="emerald"][data-theme="dark"], [data-accent="emerald"] {
+      --accent: #10b981;
+      --accent-hover: #059669;
+      --accent-subtle: rgba(16, 185, 129, 0.15);
+      --accent-text: #34d399;
+      --brand-grad: linear-gradient(135deg, #10b981, #06b6d4);
+      --chart-p1: #10b981;
+      --chart-p2: #06b6d4;
+    }
+    [data-accent="emerald"][data-theme="light"] {
+      --accent: #059669;
+      --accent-hover: #047857;
+      --accent-subtle: rgba(5, 150, 105, 0.1);
+      --accent-text: #059669;
+      --brand-grad: linear-gradient(135deg, #059669, #0891b2);
+      --chart-p1: #059669;
+      --chart-p2: #0891b2;
+    }
+
+    /* 2. Linear Iris */
+    [data-accent="iris"][data-theme="dark"] {
+      --accent: #5e6ad2;
+      --accent-hover: #4f46e5;
+      --accent-subtle: rgba(94, 106, 210, 0.15);
+      --accent-text: #818cf8;
+      --brand-grad: linear-gradient(135deg, #5e6ad2, #a855f7);
+      --chart-p1: #5e6ad2;
+      --chart-p2: #a855f7;
+    }
+    [data-accent="iris"][data-theme="light"] {
+      --accent: #4f46e5;
+      --accent-hover: #4338ca;
+      --accent-subtle: rgba(79, 70, 229, 0.1);
+      --accent-text: #4f46e5;
+      --brand-grad: linear-gradient(135deg, #4f46e5, #9333ea);
+      --chart-p1: #4f46e5;
+      --chart-p2: #9333ea;
+    }
+
+    /* 3. Electric Cyan */
+    [data-accent="cyan"][data-theme="dark"] {
+      --accent: #06b6d4;
+      --accent-hover: #0891b2;
+      --accent-subtle: rgba(6, 182, 212, 0.15);
+      --accent-text: #38bdf8;
+      --brand-grad: linear-gradient(135deg, #06b6d4, #3b82f6);
+      --chart-p1: #06b6d4;
+      --chart-p2: #3b82f6;
+    }
+    [data-accent="cyan"][data-theme="light"] {
+      --accent: #0891b2;
+      --accent-hover: #0e7490;
+      --accent-subtle: rgba(8, 145, 178, 0.1);
+      --accent-text: #0891b2;
+      --brand-grad: linear-gradient(135deg, #0891b2, #2563eb);
+      --chart-p1: #0891b2;
+      --chart-p2: #2563eb;
+    }
+
+    /* 4. Anthropic Amber */
+    [data-accent="amber"][data-theme="dark"] {
+      --accent: #f59e0b;
+      --accent-hover: #d97706;
+      --accent-subtle: rgba(245, 158, 11, 0.15);
+      --accent-text: #fbbf24;
+      --brand-grad: linear-gradient(135deg, #f59e0b, #ef4444);
+      --chart-p1: #f59e0b;
+      --chart-p2: #f43f5e;
+    }
+    [data-accent="amber"][data-theme="light"] {
+      --accent: #d97706;
+      --accent-hover: #b45309;
+      --accent-subtle: rgba(217, 119, 6, 0.1);
+      --accent-text: #d97706;
+      --brand-grad: linear-gradient(135deg, #d97706, #dc2626);
+      --chart-p1: #d97706;
+      --chart-p2: #dc2626;
+    }
+
+    /* 5. Modern Cobalt */
+    [data-accent="cobalt"][data-theme="dark"] {
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-subtle: rgba(59, 130, 246, 0.15);
+      --accent-text: #60a5fa;
+      --brand-grad: linear-gradient(135deg, #3b82f6, #06b6d4);
+      --chart-p1: #3b82f6;
+      --chart-p2: #06b6d4;
+    }
+    [data-accent="cobalt"][data-theme="light"] {
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: rgba(37, 99, 235, 0.1);
+      --accent-text: #2563eb;
+      --brand-grad: linear-gradient(135deg, #2563eb, #0891b2);
+      --chart-p1: #2563eb;
+      --chart-p2: #0891b2;
     }
 
     html, body {
@@ -135,12 +230,12 @@
       width: 30px;
       height: 30px;
       border-radius: 8px;
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      background: var(--brand-grad);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
     }
 
     .brand-text {
@@ -166,7 +261,7 @@
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
     .status-pill {
@@ -235,6 +330,36 @@
       color: var(--text-primary);
       border-color: var(--border-hover);
     }
+
+    /* Accent Swatches Popover */
+    .accent-bar {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 3px 6px;
+    }
+    .swatch-btn {
+      width: 14px;
+      height: 14px;
+      border-radius: 50%;
+      border: none;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      position: relative;
+    }
+    .swatch-btn:hover { transform: scale(1.2); }
+    .swatch-btn.active {
+      box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
+      transform: scale(1.15);
+    }
+    .swatch-emerald { background: #10b981; }
+    .swatch-iris { background: #5e6ad2; }
+    .swatch-cyan { background: #06b6d4; }
+    .swatch-amber { background: #f59e0b; }
+    .swatch-cobalt { background: #3b82f6; }
 
     /* ---- MAIN LAYOUT ---- */
     .app-workspace {
@@ -333,8 +458,8 @@
       width: 28px;
       height: 28px;
       border-radius: 6px;
-      background: var(--emerald-subtle);
-      color: var(--emerald);
+      background: var(--accent-subtle);
+      color: var(--accent-text);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -536,7 +661,7 @@
       margin-bottom: 12px;
     }
     .hero-title span {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      background: var(--brand-grad);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -601,7 +726,7 @@
       font-size: 12px;
     }
     .msg-avatar.ai {
-      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      background: var(--brand-grad);
       color: #ffffff;
     }
     .msg-avatar.user {
@@ -774,7 +899,7 @@
       padding: 12px;
       font-family: var(--font-mono);
       font-size: 12px;
-      color: #38bdf8;
+      color: var(--accent-text);
       overflow-x: auto;
       line-height: 1.5;
     }
@@ -1071,17 +1196,20 @@ const Icons = {
 };
 
 /* ---- PLOTLY WRAPPER ---- */
-function PlotlyChart({ data, theme }) {
+function PlotlyChart({ data, theme, accent }) {
   const ref = useRef();
   useEffect(() => {
     const el = ref.current;
     if (!el || !data) return;
     const isDark = theme === 'dark';
+    const primaryColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-p1').trim() || '#10b981';
+    const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-p2').trim() || '#06b6d4';
+
     const traces = Array.isArray(data.data) ? data.data : [];
-    const coloredData = traces.map(trace => ({
+    const coloredData = traces.map((trace, idx) => ({
       ...trace,
-      marker: { ...((trace.marker) || {}), color: trace.marker?.color || '#3b82f6' },
-      line: { ...((trace.line) || {}), color: trace.line?.color || '#06b6d4' }
+      marker: { ...((trace.marker) || {}), color: trace.marker?.color || (idx === 0 ? primaryColor : secondaryColor) },
+      line: { ...((trace.line) || {}), color: trace.line?.color || (idx === 0 ? primaryColor : secondaryColor) }
     }));
     try {
       Plotly.newPlot(el, coloredData, {
@@ -1090,7 +1218,7 @@ function PlotlyChart({ data, theme }) {
         plot_bgcolor: 'rgba(0,0,0,0)',
         font: { family: 'Plus Jakarta Sans, sans-serif', color: isDark ? '#94a3b8' : '#475569', size: 12 },
         margin: { t: 30, r: 20, b: 40, l: 50 },
-        colorway: ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'],
+        colorway: [primaryColor, secondaryColor, '#3b82f6', '#f59e0b', '#f43f5e', '#8b5cf6'],
         xaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
         yaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
       }, { responsive: true, displayModeBar: false });
@@ -1102,7 +1230,7 @@ function PlotlyChart({ data, theme }) {
         try { Plotly.purge(el); } catch (e) {}
       }
     };
-  }, [data, theme]);
+  }, [data, theme, accent]);
   return <div ref={ref} className="chart-container" />;
 }
 
@@ -1128,7 +1256,7 @@ function DataTable({ table }) {
 }
 
 /* ---- STUDIO CARD (TABBED RESULT) ---- */
-function StudioResultCard({ msg, theme }) {
+function StudioResultCard({ msg, theme, accent }) {
   const [activeTab, setActiveTab] = useState(msg.chart ? 'chart' : msg.table ? 'table' : 'code');
   const [copiedCode, setCopiedCode] = useState(false);
 
@@ -1199,7 +1327,7 @@ function StudioResultCard({ msg, theme }) {
           </div>
 
           <div className="studio-content">
-            {activeTab === 'chart' && msg.chart && <PlotlyChart data={msg.chart} theme={theme} />}
+            {activeTab === 'chart' && msg.chart && <PlotlyChart data={msg.chart} theme={theme} accent={accent} />}
             {activeTab === 'table' && msg.table && <DataTable table={msg.table} />}
             {activeTab === 'code' && msg.code && <pre className="code-viewer">{msg.code}</pre>}
           </div>
@@ -1233,16 +1361,20 @@ function App() {
     } catch { return []; }
   });
 
+  // Restore persisted theme & accent
+  const [theme, setTheme] = useState(() => {
+    try { return localStorage.getItem('queryza_theme_v1') || 'dark'; } catch { return 'dark'; }
+  });
+
+  const [accent, setAccent] = useState(() => {
+    try { return localStorage.getItem('queryza_accent_v1') || 'emerald'; } catch { return 'emerald'; }
+  });
+
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState(() => {
-    try {
-      return localStorage.getItem('queryza_theme_v1') || 'dark';
-    } catch { return 'dark'; }
-  });
   const [sheetPicker, setSheetPicker] = useState(null);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [columnFilter, setColumnFilter] = useState('');
@@ -1253,10 +1385,13 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
-    try {
-      localStorage.setItem('queryza_theme_v1', theme);
-    } catch (e) {}
+    try { localStorage.setItem('queryza_theme_v1', theme); } catch (e) {}
   }, [theme]);
+
+  useEffect(() => {
+    document.documentElement.setAttribute('data-accent', accent);
+    try { localStorage.setItem('queryza_accent_v1', accent); } catch (e) {}
+  }, [accent]);
 
   // Persist session to localStorage
   useEffect(() => {
@@ -1493,6 +1628,15 @@ function App() {
              serverStatus === 'error' ? 'Connecting...' : 'Checking...'}
           </div>
 
+          {/* Accent Color Picker */}
+          <div className="accent-bar" title="Change accent palette">
+            <button className={`swatch-btn swatch-emerald ${accent === 'emerald' ? 'active' : ''}`} onClick={() => setAccent('emerald')} title="Cyber Jade (Default)" />
+            <button className={`swatch-btn swatch-iris ${accent === 'iris' ? 'active' : ''}`} onClick={() => setAccent('iris')} title="Linear Iris" />
+            <button className={`swatch-btn swatch-cyan ${accent === 'cyan' ? 'active' : ''}`} onClick={() => setAccent('cyan')} title="Electric Cyan" />
+            <button className={`swatch-btn swatch-amber ${accent === 'amber' ? 'active' : ''}`} onClick={() => setAccent('amber')} title="Anthropic Amber" />
+            <button className={`swatch-btn swatch-cobalt ${accent === 'cobalt' ? 'active' : ''}`} onClick={() => setAccent('cobalt')} title="Modern Cobalt" />
+          </div>
+
           {session && (
             <button className="header-btn" onClick={() => setPreviewModalOpen(true)} title="View top rows of dataset">
               <Icons.Eye /> Preview
@@ -1505,7 +1649,7 @@ function App() {
             </button>
           )}
 
-          <button className="icon-btn" onClick={toggleTheme} title="Toggle theme">
+          <button className="icon-btn" onClick={toggleTheme} title="Toggle Dark/Light theme">
             {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
           </button>
         </div>
@@ -1646,7 +1790,7 @@ function App() {
                     {msg.role === 'user' ? (
                       <div className="msg-bubble-user">{msg.content}</div>
                     ) : (
-                      <StudioResultCard msg={msg} theme={theme} />
+                      <StudioResultCard msg={msg} theme={theme} accent={accent} />
                     )}
                   </div>
                 ))}
