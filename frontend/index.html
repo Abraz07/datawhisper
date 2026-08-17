@@ -3,397 +3,1067 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Queryza — Talk to Your Data</title>
+  <title>Queryza — Conversational Data Studio</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/7.23.2/babel.min.js"></script>
   <script src="https://cdn.plot.ly/plotly-2.27.0.min.js"></script>
-  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --transition: 0.3s ease;
+      --font-sans: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-mono: 'JetBrains Mono', monospace;
+      --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
     [data-theme="dark"] {
-      --bg: #060810;
-      --bg2: #0c0f1a;
-      --surface: #111827;
-      --surface2: #1a2235;
-      --surface3: #1f2a40;
-      --border: #1e2d45;
-      --border2: #253550;
-      --accent: #6366f1;
-      --accent-glow: rgba(99,102,241,0.3);
-      --accent2: #22d3ee;
-      --accent3: #10b981;
-      --text: #f0f4ff;
-      --text2: #8b9abd;
-      --text3: #3d4f6e;
-      --danger: #f43f5e;
-      --card-shadow: 0 4px 24px rgba(0,0,0,0.4);
-      --glow: 0 0 40px rgba(99,102,241,0.15);
+      --bg: #080a0f;
+      --bg-subtle: #0d111a;
+      --surface: #121724;
+      --surface-hover: #182032;
+      --surface-active: #1e273d;
+      --surface-elevated: #151b2a;
+      --border: rgba(255, 255, 255, 0.08);
+      --border-subtle: rgba(255, 255, 255, 0.04);
+      --border-hover: rgba(255, 255, 255, 0.16);
+      --text-primary: #f8fafc;
+      --text-secondary: #94a3b8;
+      --text-muted: #64748b;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --accent-subtle: rgba(59, 130, 246, 0.12);
+      --accent-text: #60a5fa;
+      --emerald: #10b981;
+      --emerald-subtle: rgba(16, 185, 129, 0.12);
+      --amber: #f59e0b;
+      --amber-subtle: rgba(245, 158, 11, 0.12);
+      --rose: #f43f5e;
+      --rose-subtle: rgba(244, 63, 94, 0.12);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
+      --glass-bg: rgba(18, 23, 36, 0.85);
+      --table-stripe: rgba(255, 255, 255, 0.02);
     }
 
     [data-theme="light"] {
-      --bg: #f5f7ff;
-      --bg2: #eef1fa;
+      --bg: #f8fafc;
+      --bg-subtle: #f1f5f9;
       --surface: #ffffff;
-      --surface2: #f0f3ff;
-      --surface3: #e8ecf8;
-      --border: #dde3f5;
-      --border2: #c8d0ea;
-      --accent: #4f46e5;
-      --accent-glow: rgba(79,70,229,0.15);
-      --accent2: #0891b2;
-      --accent3: #059669;
-      --text: #0f172a;
-      --text2: #4a5680;
-      --text3: #9aa5c4;
-      --danger: #e11d48;
-      --card-shadow: 0 4px 24px rgba(79,70,229,0.08);
-      --glow: 0 0 40px rgba(79,70,229,0.08);
+      --surface-hover: #f8fafc;
+      --surface-active: #f1f5f9;
+      --surface-elevated: #ffffff;
+      --border: rgba(0, 0, 0, 0.08);
+      --border-subtle: rgba(0, 0, 0, 0.04);
+      --border-hover: rgba(0, 0, 0, 0.15);
+      --text-primary: #0f172a;
+      --text-secondary: #475569;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --accent-subtle: rgba(37, 99, 235, 0.08);
+      --accent-text: #2563eb;
+      --emerald: #059669;
+      --emerald-subtle: rgba(5, 150, 105, 0.08);
+      --amber: #d97706;
+      --amber-subtle: rgba(217, 119, 6, 0.08);
+      --rose: #e11d48;
+      --rose-subtle: rgba(225, 29, 72, 0.08);
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.06);
+      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.08);
+      --glass-bg: rgba(255, 255, 255, 0.85);
+      --table-stripe: rgba(0, 0, 0, 0.015);
     }
 
-    html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Space Grotesk', sans-serif; transition: background var(--transition), color var(--transition); }
-
-    /* Animated gradient bg */
-    body::before {
-      content: '';
-      position: fixed; inset: 0; z-index: 0; pointer-events: none;
-      background: radial-gradient(ellipse 80% 50% at 20% -10%, rgba(99,102,241,0.12) 0%, transparent 60%),
-                  radial-gradient(ellipse 60% 40% at 80% 110%, rgba(34,211,238,0.08) 0%, transparent 60%);
+    html, body {
+      height: 100%;
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 14px;
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      transition: background var(--transition), color var(--transition);
     }
 
-    [data-theme="light"] body::before {
-      background: radial-gradient(ellipse 80% 50% at 20% -10%, rgba(79,70,229,0.06) 0%, transparent 60%),
-                  radial-gradient(ellipse 60% 40% at 80% 110%, rgba(8,145,178,0.05) 0%, transparent 60%);
+    #root {
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
 
-    #root { position: relative; z-index: 1; height: 100%; display: flex; flex-direction: column; }
+    /* ---- SCROLLBARS ---- */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
 
     /* ---- HEADER ---- */
     header {
-      display: flex; align-items: center; justify-content: space-between;
-      padding: 0 24px; height: 60px;
+      height: 56px;
+      padding: 0 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       border-bottom: 1px solid var(--border);
-      background: rgba(6,8,16,0.8); backdrop-filter: blur(20px);
-      position: sticky; top: 0; z-index: 100;
-      transition: background var(--transition);
+      background: var(--glass-bg);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      flex-shrink: 0;
     }
-    [data-theme="light"] header { background: rgba(255,255,255,0.85); }
 
-    .logo { display: flex; align-items: center; gap: 10px; text-decoration: none; }
-    .logo-mark {
-      width: 34px; height: 34px; border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 16px; box-shadow: 0 0 20px var(--accent-glow);
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text-primary);
+      cursor: pointer;
     }
-    .logo-name { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; letter-spacing: -0.5px; }
-    .logo-name em { color: var(--accent2); font-style: normal; }
 
-    .header-right { display: flex; align-items: center; gap: 12px; }
-    .header-pill {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      color: var(--text2); border: 1px solid var(--border);
-      border-radius: 20px; padding: 5px 12px;
-      background: var(--surface2);
-      display: inline-flex; align-items: center; gap: 6px;
-      transition: all 0.3s;
+    .brand-icon {
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+      box-shadow: 0 2px 8px rgba(59, 130, 246, 0.3);
     }
+
+    .brand-text {
+      font-weight: 700;
+      font-size: 17px;
+      letter-spacing: -0.4px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .brand-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      padding: 2px 6px;
+      border-radius: 4px;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      letter-spacing: 0.2px;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .status-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: var(--font-mono);
+      font-size: 11px;
+      padding: 5px 10px;
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+
     .status-dot {
-      width: 6px; height: 6px; border-radius: 50%; display: inline-block;
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
     }
-    .status-dot.ready {
-      background: var(--accent3);
-      box-shadow: 0 0 8px var(--accent3);
-    }
-    .status-dot.waking, .status-dot.checking {
-      background: #f59e0b;
-      box-shadow: 0 0 8px #f59e0b;
-      animation: pulse-waking 1.5s infinite;
-    }
-    .status-dot.error {
-      background: var(--danger);
-      box-shadow: 0 0 8px var(--danger);
-    }
-    @keyframes pulse-waking {
+    .status-dot.ready { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
+    .status-dot.waking { background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: pulse 1.4s infinite; }
+    .status-dot.error { background: var(--rose); box-shadow: 0 0 6px var(--rose); }
+
+    @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50% { opacity: 0.35; transform: scale(0.85); }
+      50% { opacity: 0.4; transform: scale(0.85); }
     }
 
-    /* Theme toggle */
-    .theme-toggle {
-      width: 40px; height: 40px; border-radius: 10px; border: 1px solid var(--border);
-      background: var(--surface2); cursor: pointer; display: flex; align-items: center;
-      justify-content: center; font-size: 16px; transition: all 0.2s;
-      color: var(--text2);
+    .icon-btn {
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
     }
-    .theme-toggle:hover { border-color: var(--accent); background: var(--surface3); color: var(--text); }
+    .icon-btn:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+      color: var(--text-primary);
+    }
 
-    /* ---- LAYOUT ---- */
-    .app-body { flex: 1; display: grid; grid-template-columns: 280px 1fr; overflow: hidden; }
+    .header-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 32px;
+      padding: 0 12px;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 500;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .header-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
 
-    /* ---- SIDEBAR ---- */
+    /* ---- MAIN LAYOUT ---- */
+    .app-workspace {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 300px 1fr;
+      overflow: hidden;
+      position: relative;
+    }
+
+    /* ---- SIDEBAR / DATASET NAVIGATOR ---- */
     .sidebar {
+      background: var(--bg-subtle);
       border-right: 1px solid var(--border);
-      display: flex; flex-direction: column; overflow-y: auto;
-      background: var(--surface); transition: background var(--transition);
-    }
-    .sidebar::-webkit-scrollbar { width: 3px; }
-    .sidebar::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-    .sidebar-section { padding: 16px; border-bottom: 1px solid var(--border); }
-    .sidebar-label {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      text-transform: uppercase; letter-spacing: 2px; color: var(--text3);
-      margin-bottom: 12px; display: flex; align-items: center; gap: 6px;
+      display: flex;
+      flex-direction: column;
+      overflow-y: auto;
+      height: 100%;
     }
 
-    /* Upload */
-    .upload-zone {
-      border: 1.5px dashed var(--border2); border-radius: 12px;
-      padding: 28px 16px; text-align: center; cursor: pointer;
-      transition: all 0.2s; position: relative; overflow: hidden;
-      background: var(--surface2);
-    }
-    .upload-zone:hover, .upload-zone.drag-over {
-      border-color: var(--accent); background: var(--accent-glow);
-      box-shadow: inset 0 0 20px var(--accent-glow);
-    }
-    .upload-zone input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .upload-icon { font-size: 32px; margin-bottom: 10px; display: block; }
-    .upload-title { font-size: 14px; font-weight: 600; margin-bottom: 4px; color: var(--text); }
-    .upload-sub { font-size: 11px; color: var(--text2); }
-
-    /* File info */
-    .file-info {
-      background: linear-gradient(135deg, var(--surface2), var(--surface3));
-      border-radius: 12px; padding: 14px; border: 1px solid var(--border2);
-      box-shadow: var(--card-shadow);
-    }
-    .file-icon-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
-    .file-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent3); flex-shrink: 0; box-shadow: 0 0 8px var(--accent3); }
-    .file-name { font-size: 13px; font-weight: 600; word-break: break-all; flex: 1; }
-    .file-meta { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 10px; }
-    .file-tag {
-      font-family: 'JetBrains Mono', monospace; font-size: 10px;
-      padding: 3px 8px; border-radius: 6px;
-      background: var(--bg); color: var(--accent2);
-      border: 1px solid var(--border2);
-    }
-    .file-change { font-size: 11px; color: var(--text3); cursor: pointer; transition: color 0.2s; display: inline-flex; align-items: center; gap: 4px; }
-    .file-change:hover { color: var(--accent); }
-
-    /* Columns */
-    .col-list { display: flex; flex-direction: column; gap: 4px; }
-    .col-item {
-      display: flex; justify-content: space-between; align-items: center;
-      padding: 7px 10px; background: var(--surface2); border-radius: 8px;
-      border: 1px solid var(--border); transition: all 0.15s;
-    }
-    .col-item:hover { border-color: var(--accent); background: var(--surface3); }
-    .col-name { font-size: 12px; font-weight: 500; }
-    .col-badge {
-      font-family: 'JetBrains Mono', monospace; font-size: 9px;
-      padding: 2px 6px; border-radius: 4px;
-      background: rgba(99,102,241,0.15); color: var(--accent);
-      border: 1px solid rgba(99,102,241,0.2);
+    .sidebar-section {
+      padding: 16px;
+      border-bottom: 1px solid var(--border-subtle);
     }
 
-    /* Suggestions */
-    .suggestions { display: flex; flex-direction: column; gap: 6px; }
-    .suggestion-btn {
-      text-align: left; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 10px 12px; cursor: pointer;
-      font-size: 12px; color: var(--text2); transition: all 0.2s;
-      font-family: 'Space Grotesk', sans-serif; font-weight: 500;
-      display: flex; align-items: flex-start; gap: 8px;
+    .section-title {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      color: var(--text-muted);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .suggestion-btn:hover { border-color: var(--accent); color: var(--text); background: var(--accent-glow); transform: translateX(2px); }
-    .suggestion-arrow { color: var(--accent); flex-shrink: 0; opacity: 0; transition: opacity 0.2s; }
-    .suggestion-btn:hover .suggestion-arrow { opacity: 1; }
 
-    /* ---- CHAT ---- */
-    .chat-area { display: flex; flex-direction: column; overflow: hidden; background: var(--bg); transition: background var(--transition); }
-
-    /* Empty */
-    .empty-state {
-      flex: 1; display: flex; flex-direction: column;
-      align-items: center; justify-content: center;
-      text-align: center; padding: 40px 24px;
+    /* File Drop Card in Sidebar */
+    .file-dropzone {
+      border: 1.5px dashed var(--border-hover);
+      background: var(--surface);
+      border-radius: 10px;
+      padding: 24px 16px;
+      text-align: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
     }
-    .empty-orb {
-      width: 100px; height: 100px; border-radius: 50%;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 44px; margin-bottom: 28px;
-      box-shadow: 0 0 60px var(--accent-glow), 0 0 120px var(--accent-glow);
-      animation: float 3s ease-in-out infinite;
+    .file-dropzone:hover, .file-dropzone.drag-active {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
     }
-    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
-    .empty-title { font-family: 'Outfit', sans-serif; font-size: 36px; font-weight: 900; margin-bottom: 12px; line-height: 1.1; letter-spacing: -1px; }
-    .empty-title span { background: linear-gradient(135deg, var(--accent), var(--accent2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
-    .empty-sub { font-size: 15px; color: var(--text2); max-width: 380px; line-height: 1.7; margin-bottom: 32px; }
-    .empty-upload {
-      border: 1.5px dashed var(--border2); border-radius: 16px;
-      padding: 24px 40px; cursor: pointer; transition: all 0.2s;
-      background: var(--surface); position: relative; overflow: hidden;
+    .file-dropzone input {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
     }
-    .empty-upload:hover { border-color: var(--accent); box-shadow: 0 0 30px var(--accent-glow); }
-    .empty-upload input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
-    .empty-upload-text { font-size: 14px; font-weight: 600; color: var(--text2); }
-    .empty-upload-text span { color: var(--accent); }
+    .dropzone-icon {
+      width: 36px;
+      height: 36px;
+      margin: 0 auto 10px;
+      border-radius: 8px;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .dropzone-title {
+      font-weight: 600;
+      font-size: 13px;
+      margin-bottom: 4px;
+    }
+    .dropzone-meta {
+      font-size: 11px;
+      color: var(--text-muted);
+    }
 
-    /* Messages */
-    .messages { flex: 1; overflow-y: auto; padding: 20px; display: flex; flex-direction: column; gap: 18px; }
-    .messages::-webkit-scrollbar { width: 3px; }
-    .messages::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
+    /* Loaded Dataset Card */
+    .dataset-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px;
+      box-shadow: var(--shadow-sm);
+    }
+    .dataset-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 8px;
+    }
+    .dataset-icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: var(--emerald-subtle);
+      color: var(--emerald);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dataset-filename {
+      font-weight: 600;
+      font-size: 13px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      flex: 1;
+    }
+    .dataset-stats {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-bottom: 10px;
+    }
+    .stat-badge {
+      font-family: var(--font-mono);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+    }
+    .dataset-switch-btn {
+      font-size: 11px;
+      color: var(--accent-text);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-weight: 500;
+      transition: color var(--transition);
+    }
+    .dataset-switch-btn:hover {
+      text-decoration: underline;
+    }
 
-    .msg { display: flex; gap: 10px; animation: slideUp 0.3s ease forwards; }
-    .msg.user { flex-direction: row-reverse; }
-    @keyframes slideUp { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    /* Column Schema Explorer */
+    .column-search {
+      margin-bottom: 8px;
+      position: relative;
+    }
+    .column-search input {
+      width: 100%;
+      height: 28px;
+      padding: 0 8px 0 26px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-primary);
+      font-size: 11px;
+      font-family: var(--font-sans);
+      outline: none;
+    }
+    .column-search input:focus {
+      border-color: var(--accent);
+    }
+    .column-search-icon {
+      position: absolute;
+      left: 8px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--text-muted);
+      pointer-events: none;
+    }
+
+    .column-list {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      max-height: 280px;
+      overflow-y: auto;
+    }
+    .column-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 6px 8px;
+      border-radius: 6px;
+      background: var(--surface);
+      border: 1px solid var(--border-subtle);
+      font-size: 12px;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .column-row:hover {
+      background: var(--surface-hover);
+      border-color: var(--border-hover);
+    }
+    .column-name {
+      font-weight: 500;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-right: 6px;
+    }
+    .col-type-tag {
+      font-family: var(--font-mono);
+      font-size: 9px;
+      font-weight: 600;
+      padding: 1px 5px;
+      border-radius: 3px;
+      text-transform: uppercase;
+      flex-shrink: 0;
+    }
+    .tag-num { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
+    .tag-txt { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
+    .tag-date { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+
+    /* Suggested Questions */
+    .prompts-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .prompt-chip {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 7px;
+      padding: 8px 10px;
+      font-size: 12px;
+      color: var(--text-secondary);
+      text-align: left;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      transition: all var(--transition);
+    }
+    .prompt-chip:hover {
+      background: var(--surface-hover);
+      border-color: var(--accent);
+      color: var(--text-primary);
+      transform: translateX(2px);
+    }
+    .prompt-arrow {
+      color: var(--text-muted);
+      font-size: 11px;
+      transition: transform var(--transition);
+    }
+    .prompt-chip:hover .prompt-arrow {
+      color: var(--accent);
+      transform: translateX(2px);
+    }
+
+    /* ---- MAIN CHAT / STUDIO AREA ---- */
+    .chat-workspace {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      position: relative;
+      background: var(--bg);
+    }
+
+    .messages-stream {
+      flex: 1;
+      overflow-y: auto;
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* ---- EMPTY STATE ---- */
+    .hero-container {
+      margin: auto;
+      max-width: 580px;
+      width: 100%;
+      padding: 40px 20px;
+      text-align: center;
+    }
+    .hero-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 4px 12px;
+      border-radius: 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      font-size: 12px;
+      color: var(--text-secondary);
+      margin-bottom: 16px;
+    }
+    .hero-title {
+      font-size: 32px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      line-height: 1.2;
+      margin-bottom: 12px;
+    }
+    .hero-title span {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+    .hero-desc {
+      font-size: 14px;
+      color: var(--text-secondary);
+      margin-bottom: 28px;
+      max-width: 480px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    .hero-upload-card {
+      border: 1.5px dashed var(--border-hover);
+      border-radius: 12px;
+      background: var(--surface);
+      padding: 36px 20px;
+      cursor: pointer;
+      transition: all var(--transition);
+      position: relative;
+      margin-bottom: 24px;
+    }
+    .hero-upload-card:hover, .hero-upload-card.drag-active {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
+    .hero-upload-card input {
+      position: absolute; inset: 0; opacity: 0; cursor: pointer;
+    }
+    .hero-upload-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 12px;
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 12px;
+    }
+
+    /* ---- MESSAGE CARDS ---- */
+    .msg-row {
+      display: flex;
+      gap: 12px;
+      max-width: 860px;
+      width: 100%;
+      margin: 0 auto;
+    }
+    .msg-row.user {
+      justify-content: flex-end;
+    }
 
     .msg-avatar {
-      width: 32px; height: 32px; border-radius: 10px; flex-shrink: 0;
-      display: flex; align-items: center; justify-content: center; font-size: 14px;
+      width: 30px;
+      height: 30px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 12px;
     }
-    .msg.user .msg-avatar { background: linear-gradient(135deg, var(--accent), var(--accent2)); box-shadow: 0 0 16px var(--accent-glow); }
-    .msg.ai .msg-avatar { background: var(--surface2); border: 1px solid var(--border2); }
-
-    .msg-content { max-width: 78%; display: flex; flex-direction: column; gap: 8px; }
-    .msg.user .msg-content { align-items: flex-end; }
-
-    .msg-bubble {
-      padding: 12px 16px; border-radius: 14px; font-size: 14px; line-height: 1.7;
+    .msg-avatar.ai {
+      background: linear-gradient(135deg, #3b82f6, #06b6d4);
+      color: #ffffff;
     }
-    .msg.user .msg-bubble {
-      background: linear-gradient(135deg, rgba(99,102,241,0.25), rgba(34,211,238,0.15));
-      border: 1px solid rgba(99,102,241,0.3);
-    }
-    .msg.ai .msg-bubble {
-      background: var(--surface); border: 1px solid var(--border2);
-      box-shadow: var(--card-shadow);
+    .msg-avatar.user {
+      background: var(--surface-hover);
+      color: var(--text-secondary);
+      border: 1px solid var(--border);
     }
 
-    /* Code */
-    .code-block { background: var(--bg2); border: 1px solid var(--border2); border-radius: 10px; overflow: hidden; width: 100%; }
-    .code-header { display: flex; justify-content: space-between; align-items: center; padding: 8px 14px; background: var(--surface3); cursor: pointer; transition: background 0.15s; }
-    .code-header:hover { background: var(--surface2); }
-    .code-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; text-transform: uppercase; letter-spacing: 1px; color: var(--text2); }
-    .copy-btn { font-size: 11px; color: var(--text2); cursor: pointer; background: none; border: 1px solid var(--border); border-radius: 5px; font-family: 'JetBrains Mono', monospace; padding: 2px 8px; transition: all 0.15s; }
-    .copy-btn:hover { color: var(--accent); border-color: var(--accent); }
-    .code-body { padding: 14px; overflow-x: auto; font-family: 'JetBrains Mono', monospace; font-size: 12px; line-height: 1.7; color: #93c5fd; }
+    .msg-bubble-user {
+      background: var(--accent);
+      color: #ffffff;
+      padding: 10px 16px;
+      border-radius: 12px 12px 2px 12px;
+      font-size: 13px;
+      font-weight: 500;
+      max-width: 600px;
+      box-shadow: var(--shadow-sm);
+    }
 
-    /* Chart */
-    .chart-wrap { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; overflow: hidden; width: 100%; box-shadow: var(--card-shadow); }
-    .chart-inner { width: 100%; min-height: 280px; }
+    .msg-card-ai {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 16px;
+      flex: 1;
+      box-shadow: var(--shadow-sm);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
 
-    /* Table */
-    .table-wrap { background: var(--surface); border: 1px solid var(--border2); border-radius: 14px; overflow: auto; max-height: 260px; width: 100%; box-shadow: var(--card-shadow); }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; }
-    thead { position: sticky; top: 0; }
-    th { padding: 10px 14px; text-align: left; background: var(--surface3); color: var(--text2); font-family: 'JetBrains Mono', monospace; font-size: 10px; letter-spacing: 0.5px; border-bottom: 1px solid var(--border); white-space: nowrap; }
-    td { padding: 8px 14px; border-bottom: 1px solid var(--border); color: var(--text); white-space: nowrap; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: var(--surface2); }
+    .ai-header-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 8px;
+      margin-bottom: 4px;
+    }
+    .ai-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .ai-actions {
+      display: flex;
+      gap: 6px;
+    }
+    .tool-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .tool-btn:hover {
+      background: var(--surface-active);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
 
-    /* Error */
-    .error-box { background: rgba(244,63,94,0.08); border: 1px solid rgba(244,63,94,0.3); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: var(--danger); font-family: 'JetBrains Mono', monospace; }
+    .ai-explanation {
+      font-size: 13.5px;
+      color: var(--text-primary);
+      line-height: 1.6;
+    }
 
-    /* Typing */
-    .typing { display: flex; gap: 5px; align-items: center; padding: 4px 0; }
-    .typing-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--accent); animation: bounce 1.2s infinite; }
-    .typing-dot:nth-child(2) { animation-delay: 0.15s; background: var(--accent2); }
-    .typing-dot:nth-child(3) { animation-delay: 0.3s; }
-    @keyframes bounce { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+    /* ---- TABBED RESULTS STUDIO ---- */
+    .studio-card {
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--bg-subtle);
+      overflow: hidden;
+      margin-top: 6px;
+    }
+    .studio-tabs {
+      display: flex;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      padding: 4px 8px 0;
+      gap: 4px;
+    }
+    .tab-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-muted);
+      background: transparent;
+      border: none;
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .tab-btn:hover {
+      color: var(--text-primary);
+    }
+    .tab-btn.active {
+      color: var(--accent-text);
+      border-bottom-color: var(--accent);
+    }
 
-    /* Input */
-    .input-bar { padding: 14px 20px; border-top: 1px solid var(--border); background: rgba(6,8,16,0.7); backdrop-filter: blur(20px); transition: background var(--transition); }
-    [data-theme="light"] .input-bar { background: rgba(255,255,255,0.8); }
-    .input-wrap { display: flex; gap: 10px; align-items: flex-end; background: var(--surface); border: 1.5px solid var(--border2); border-radius: 14px; padding: 10px 14px; transition: all 0.2s; box-shadow: var(--card-shadow); }
-    .input-wrap:focus-within { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-glow); }
-    textarea { flex: 1; background: none; border: none; outline: none; resize: none; font-family: 'Space Grotesk', sans-serif; font-size: 14px; color: var(--text); min-height: 22px; max-height: 120px; line-height: 1.5; }
-    textarea::placeholder { color: var(--text3); }
+    .studio-content {
+      padding: 12px;
+    }
+
+    /* Charts */
+    .chart-container {
+      width: 100%;
+      min-height: 380px;
+      border-radius: 8px;
+    }
+
+    /* Data Tables */
+    .table-container {
+      width: 100%;
+      max-height: 340px;
+      overflow: auto;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      font-family: var(--font-mono);
+      text-align: left;
+    }
+    th {
+      background: var(--surface);
+      padding: 8px 12px;
+      color: var(--text-muted);
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 2;
+    }
+    td {
+      padding: 7px 12px;
+      border-bottom: 1px solid var(--border-subtle);
+      color: var(--text-secondary);
+    }
+    tr:nth-child(even) {
+      background: var(--table-stripe);
+    }
+    tr:hover td {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+    }
+
+    /* Code Viewer */
+    .code-viewer {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 12px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: #38bdf8;
+      overflow-x: auto;
+      line-height: 1.5;
+    }
+
+    /* Typing indicator */
+    .typing-box {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      padding: 6px 0;
+    }
+    .typing-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      animation: typing-dot 1.2s infinite ease-in-out;
+    }
+    .typing-dot:nth-child(1) { animation-delay: 0s; }
+    .typing-dot:nth-child(2) { animation-delay: 0.2s; }
+    .typing-dot:nth-child(3) { animation-delay: 0.4s; }
+
+    @keyframes typing-dot {
+      0%, 80%, 100% { transform: scale(0.6); opacity: 0.4; }
+      40% { transform: scale(1); opacity: 1; }
+    }
+
+    /* ---- FLOATING INPUT DOCK ---- */
+    .input-dock {
+      padding: 16px 24px;
+      background: linear-gradient(to top, var(--bg) 70%, transparent);
+      position: sticky;
+      bottom: 0;
+      z-index: 30;
+      flex-shrink: 0;
+    }
+    .input-box {
+      max-width: 860px;
+      margin: 0 auto;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 8px 12px 8px 14px;
+      display: flex;
+      align-items: flex-end;
+      gap: 8px;
+      box-shadow: var(--shadow-md);
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .input-box:focus-within {
+      border-color: var(--accent);
+      box-shadow: 0 0 0 2px var(--accent-subtle);
+    }
+    .input-box textarea {
+      flex: 1;
+      border: none;
+      background: transparent;
+      color: var(--text-primary);
+      font-family: var(--font-sans);
+      font-size: 13.5px;
+      outline: none;
+      resize: none;
+      max-height: 140px;
+      min-height: 24px;
+      padding: 4px 0;
+      line-height: 1.4;
+    }
+    .input-box textarea::placeholder {
+      color: var(--text-muted);
+    }
     .send-btn {
-      width: 38px; height: 38px; border-radius: 10px; border: none; cursor: pointer;
-      background: linear-gradient(135deg, var(--accent), var(--accent2));
-      display: flex; align-items: center; justify-content: center;
-      font-size: 18px; font-weight: bold; transition: all 0.2s; flex-shrink: 0;
-      box-shadow: 0 4px 14px var(--accent-glow); color: white;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: var(--accent);
+      border: none;
+      color: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: all var(--transition);
     }
-    .send-btn:disabled { opacity: 0.3; cursor: not-allowed; box-shadow: none; }
-    .send-btn:not(:disabled):hover { transform: scale(1.05); box-shadow: 0 6px 20px var(--accent-glow); }
-    .input-hint { text-align: center; font-size: 10px; color: var(--text3); margin-top: 8px; font-family: 'JetBrains Mono', monospace; }
+    .send-btn:disabled {
+      background: var(--surface-hover);
+      color: var(--text-muted);
+      cursor: not-allowed;
+    }
+    .send-btn:not(:disabled):hover {
+      background: var(--accent-hover);
+    }
 
-    /* Sidebar toggle mobile */
-    .sidebar-toggle { display: none; }
+    .input-shortcuts {
+      text-align: center;
+      font-size: 11px;
+      font-family: var(--font-mono);
+      color: var(--text-muted);
+      margin-top: 6px;
+    }
 
-    /* Sheet picker modal */
-    .modal-overlay {
-      position: fixed; inset: 0; z-index: 200;
-      background: rgba(6, 8, 16, 0.75); backdrop-filter: blur(8px);
-      display: flex; align-items: center; justify-content: center; padding: 20px;
+    /* ---- MODALS ---- */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(4px);
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
     }
-    .modal-card {
-      background: var(--surface); border: 1px solid var(--border2);
-      border-radius: 16px; padding: 24px; width: 100%; max-width: 420px;
-      box-shadow: var(--card-shadow), var(--glow);
+    .modal-window {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      max-width: 640px;
+      width: 100%;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
     }
-    .modal-title { font-family: 'Outfit', sans-serif; font-size: 20px; font-weight: 800; margin-bottom: 6px; }
-    .modal-sub { font-size: 13px; color: var(--text2); margin-bottom: 18px; line-height: 1.5; }
-    .sheet-list { display: flex; flex-direction: column; gap: 8px; max-height: 280px; overflow-y: auto; }
-    .sheet-btn {
-      text-align: left; background: var(--surface2); border: 1px solid var(--border);
-      border-radius: 10px; padding: 12px 14px; cursor: pointer; font-size: 13px;
-      color: var(--text); transition: all 0.2s; font-family: 'Space Grotesk', sans-serif;
+    .modal-head {
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .sheet-btn:hover { border-color: var(--accent); background: var(--accent-glow); }
-    .modal-cancel {
-      margin-top: 14px; width: 100%; padding: 10px; border-radius: 10px;
-      border: 1px solid var(--border); background: transparent; color: var(--text2);
-      cursor: pointer; font-size: 12px; font-family: 'JetBrains Mono', monospace;
+    .modal-head h3 { font-size: 15px; font-weight: 700; }
+    .modal-body {
+      padding: 20px;
+      max-height: 70vh;
+      overflow-y: auto;
     }
-    .modal-cancel:hover { color: var(--text); border-color: var(--border2); }
+    .sheet-options {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sheet-option-btn {
+      padding: 12px 16px;
+      border-radius: 8px;
+      background: var(--surface-hover);
+      border: 1px solid var(--border);
+      color: var(--text-primary);
+      text-align: left;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      transition: all var(--transition);
+    }
+    .sheet-option-btn:hover {
+      border-color: var(--accent);
+      background: var(--accent-subtle);
+    }
 
-    /* ---- MOBILE ---- */
+    /* Mobile toggle */
+    .mobile-sidebar-toggle {
+      display: none;
+      padding: 8px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--text-secondary);
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
     @media (max-width: 768px) {
-      .header-pill { display: none; }
-      .logo-name { font-size: 18px; }
-      .app-body { grid-template-columns: 1fr; }
-      .sidebar { border-right: none; border-bottom: 1px solid var(--border); max-height: 0; overflow: hidden; transition: max-height 0.35s ease; }
-      .sidebar.open { max-height: 70vh; overflow-y: auto; }
-      .sidebar-toggle { display: flex; align-items: center; justify-content: space-between; padding: 10px 16px; background: var(--surface); border-bottom: 1px solid var(--border); cursor: pointer; font-size: 12px; color: var(--text2); font-family: 'JetBrains Mono', monospace; transition: color 0.2s; }
-      .sidebar-toggle:hover { color: var(--accent); }
-      .messages { padding: 12px; }
-      .msg-content { max-width: 92%; }
-      .empty-title { font-size: 26px; }
-      .empty-orb { width: 80px; height: 80px; font-size: 36px; }
-      .input-bar { padding: 10px 12px; }
-      .input-hint { display: none; }
+      .app-workspace { grid-template-columns: 1fr; }
+      .sidebar {
+        position: fixed;
+        left: 0; top: 56px; bottom: 0;
+        width: 280px;
+        z-index: 40;
+        transform: translateX(-100%);
+        transition: transform var(--transition);
+      }
+      .sidebar.open { transform: translateX(0); }
+      .mobile-sidebar-toggle { display: flex; }
     }
   </style>
 </head>
 <body>
 <div id="root"></div>
+
 <script type="text/babel">
 const { useState, useRef, useEffect } = React;
+
 const isLocal = window.location.hostname === 'localhost' || 
                 window.location.hostname === '127.0.0.1' || 
                 window.location.protocol === 'file:';
 const API = isLocal ? 'http://localhost:8000' : 'https://queryza-backend-705524219581.asia-south1.run.app';
 
-const DEFAULT_SUGGESTIONS = [
-  'What are the column names and their data types?',
-  'How many rows are in this dataset?',
-  'How many columns are in this dataset?',
-  'Show me a summary of all numeric columns',
-  'Show me a bar chart of the data',
-];
+/* ---- SVG ICON HELPERS ---- */
+const Icons = {
+  Logo: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+    </svg>
+  ),
+  Upload: () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/>
+    </svg>
+  ),
+  Sheet: () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="8" y1="13" x2="16" y2="13"/>
+      <line x1="8" y1="17" x2="16" y2="17"/>
+      <line x1="10" y1="9" x2="8" y2="9"/>
+    </svg>
+  ),
+  Chart: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="18" y1="20" x2="18" y2="10"/>
+      <line x1="12" y1="20" x2="12" y2="4"/>
+      <line x1="6" y1="20" x2="6" y2="14"/>
+    </svg>
+  ),
+  Table: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/>
+      <line x1="3" y1="9" x2="21" y2="9"/>
+      <line x1="3" y1="15" x2="21" y2="15"/>
+      <line x1="9" y1="3" x2="9" y2="21"/>
+      <line x1="15" y1="3" x2="15" y2="21"/>
+    </svg>
+  ),
+  Code: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="16 18 22 12 16 6"/>
+      <polyline points="8 6 2 12 8 18"/>
+    </svg>
+  ),
+  Copy: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+      <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+    </svg>
+  ),
+  Check: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="20 6 9 17 4 12"/>
+    </svg>
+  ),
+  Download: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/>
+    </svg>
+  ),
+  Sun: () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="12" cy="12" r="5"/>
+      <line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+      <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+      <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+      <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+    </svg>
+  ),
+  Moon: () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+    </svg>
+  ),
+  Trash: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="3 6 5 6 21 6"/>
+      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>
+    </svg>
+  ),
+  Search: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+    </svg>
+  ),
+  Send: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+      <line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/>
+    </svg>
+  ),
+  Eye: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+    </svg>
+  )
+};
 
-function PlotlyChart({ data, theme }) {
+/* ---- PLOTLY WRAPPER ---- */
+function PlotlyChart({ data, theme, onDownload }) {
   const ref = useRef();
   useEffect(() => {
     const el = ref.current;
@@ -402,78 +1072,142 @@ function PlotlyChart({ data, theme }) {
     const traces = Array.isArray(data.data) ? data.data : [];
     const coloredData = traces.map(trace => ({
       ...trace,
-      marker: { ...((trace.marker) || {}), color: trace.marker?.color || '#6366f1', line: { color: '#6366f1', width: 1 } },
-      line: { ...((trace.line) || {}), color: trace.line?.color || '#22d3ee' }
+      marker: { ...((trace.marker) || {}), color: trace.marker?.color || '#3b82f6' },
+      line: { ...((trace.line) || {}), color: trace.line?.color || '#06b6d4' }
     }));
     try {
       Plotly.newPlot(el, coloredData, {
         ...(data.layout || {}),
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { family: 'Space Grotesk, sans-serif', color: isDark ? '#8b9abd' : '#4a5680', size: 12 },
-        margin: { t: 40, r: 20, b: 50, l: 60 },
-        colorway: ['#6366f1', '#22d3ee', '#10b981', '#f59e0b', '#f43f5e'],
-        xaxis: { gridcolor: isDark ? '#1e2d45' : '#dde3f5', zerolinecolor: isDark ? '#1e2d45' : '#dde3f5' },
-        yaxis: { gridcolor: isDark ? '#1e2d45' : '#dde3f5', zerolinecolor: isDark ? '#1e2d45' : '#dde3f5' },
+        font: { family: 'Plus Jakarta Sans, sans-serif', color: isDark ? '#94a3b8' : '#475569', size: 12 },
+        margin: { t: 30, r: 20, b: 40, l: 50 },
+        colorway: ['#3b82f6', '#06b6d4', '#10b981', '#f59e0b', '#f43f5e', '#8b5cf6'],
+        xaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
+        yaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
       }, { responsive: true, displayModeBar: false });
     } catch (err) {
-      console.warn("Plotly render error:", err);
+      console.warn("Plotly error:", err);
     }
     return () => {
       if (el) {
-        try {
-          Plotly.purge(el);
-        } catch (e) {}
+        try { Plotly.purge(el); } catch (e) {}
       }
     };
   }, [data, theme]);
-  return <div ref={ref} className="chart-inner" />;
+  return <div ref={ref} className="chart-container" />;
 }
 
-function DataTable({ table }) {
+/* ---- DATA TABLE VIEW ---- */
+function DataTable({ table, onExport }) {
+  if (!table || !table.columns) return null;
   return (
-    <div className="table-wrap">
+    <div className="table-container">
       <table>
-        <thead><tr>{table.columns.map(c => <th key={c}>{c}</th>)}</tr></thead>
-        <tbody>{table.rows.map((row, i) => (
-          <tr key={i}>{row.map((cell, j) => <td key={j}>{String(cell ?? '')}</td>)}</tr>
-        ))}</tbody>
+        <thead>
+          <tr>{table.columns.map((c, i) => <th key={i}>{c}</th>)}</tr>
+        </thead>
+        <tbody>
+          {table.rows.map((row, i) => (
+            <tr key={i}>
+              {row.map((cell, j) => <td key={j}>{String(cell ?? '')}</td>)}
+            </tr>
+          ))}
+        </tbody>
       </table>
     </div>
   );
 }
 
-function CodeBlock({ code }) {
-  const [show, setShow] = useState(false);
-  const [copied, setCopied] = useState(false);
-  const copy = (e) => { e.stopPropagation(); navigator.clipboard.writeText(code); setCopied(true); setTimeout(() => setCopied(false), 2000); };
+/* ---- STUDIO CARD (TABBED RESULT) ---- */
+function StudioResultCard({ msg, theme }) {
+  const [activeTab, setActiveTab] = useState(msg.chart ? 'chart' : msg.table ? 'table' : 'code');
+  const [copiedCode, setCopiedCode] = useState(false);
+
+  const copyCode = () => {
+    if (!msg.code) return;
+    navigator.clipboard.writeText(msg.code);
+    setCopiedCode(true);
+    setTimeout(() => setCopiedCode(false), 2000);
+  };
+
+  const exportTableCSV = () => {
+    if (!msg.table) return;
+    const header = msg.table.columns.join(',');
+    const rows = msg.table.rows.map(r => r.map(c => `"${String(c).replace(/"/g, '""')}"`).join(','));
+    const csvContent = "data:text/csv;charset=utf-8," + [header, ...rows].join('\n');
+    const encodedUri = encodeURI(csvContent);
+    const link = document.createElement("a");
+    link.setAttribute("href", encodedUri);
+    link.setAttribute("download", "queryza_export.csv");
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   return (
-    <div className="code-block">
-      <div className="code-header" onClick={() => setShow(!show)}>
-        <span className="code-label">🐍 {show ? 'Hide' : 'Show'} Generated Code</span>
-        <button className="copy-btn" onClick={copy}>{copied ? '✓ copied' : show ? 'copy' : '▼'}</button>
+    <div className="msg-card-ai">
+      <div className="ai-header-bar">
+        <div className="ai-label">
+          <span style={{color: 'var(--accent)'}}><Icons.Logo /></span>
+          ANALYSIS RESULT
+        </div>
+        <div className="ai-actions">
+          {msg.table && (
+            <button className="tool-btn" onClick={exportTableCSV} title="Export data to CSV">
+              <Icons.Download /> CSV
+            </button>
+          )}
+          {msg.code && (
+            <button className="tool-btn" onClick={copyCode} title="Copy generated Python code">
+              {copiedCode ? <Icons.Check /> : <Icons.Copy />} {copiedCode ? 'Copied' : 'Code'}
+            </button>
+          )}
+        </div>
       </div>
-      {show && <pre className="code-body">{code}</pre>}
+
+      <div className="ai-explanation">
+        {msg.content}
+      </div>
+
+      {(msg.chart || msg.table || msg.code) && (
+        <div className="studio-card">
+          <div className="studio-tabs">
+            {msg.chart && (
+              <button className={`tab-btn ${activeTab === 'chart' ? 'active' : ''}`} onClick={() => setActiveTab('chart')}>
+                <Icons.Chart /> Visualization
+              </button>
+            )}
+            {msg.table && (
+              <button className={`tab-btn ${activeTab === 'table' ? 'active' : ''}`} onClick={() => setActiveTab('table')}>
+                <Icons.Table /> Data Table ({msg.table.rows.length})
+              </button>
+            )}
+            {msg.code && (
+              <button className={`tab-btn ${activeTab === 'code' ? 'active' : ''}`} onClick={() => setActiveTab('code')}>
+                <Icons.Code /> Python Code
+              </button>
+            )}
+          </div>
+
+          <div className="studio-content">
+            {activeTab === 'chart' && msg.chart && <PlotlyChart data={msg.chart} theme={theme} />}
+            {activeTab === 'table' && msg.table && <DataTable table={msg.table} />}
+            {activeTab === 'code' && msg.code && <pre className="code-viewer">{msg.code}</pre>}
+          </div>
+        </div>
+      )}
+
+      {msg.error && (
+        <div style={{color: 'var(--rose)', fontSize: '12px', background: 'var(--rose-subtle)', padding: '8px 12px', borderRadius: '6px'}}>
+          {msg.error}
+        </div>
+      )}
     </div>
   );
 }
 
-function Message({ msg, theme }) {
-  const isUser = msg.role === 'user';
-  const clean = (msg.content || '').replace(/Result: Index\(\[.*?\],\s*dtype='[^']*'\)/gs, '').replace(/Result: dtype\([^)]+\)/g, '').trim();
-  return (
-    <div className={`msg ${isUser ? 'user' : 'ai'}`}>
-      <div className="msg-avatar">{isUser ? '👤' : '⚡'}</div>
-      <div className="msg-content">
-        <div className="msg-bubble">{clean}</div>
-        {msg.chart && <div className="chart-wrap"><PlotlyChart data={msg.chart} theme={theme} /></div>}
-        {msg.table && <DataTable table={msg.table} />}
-        {msg.error && <div className="error-box">⚠ {msg.error}</div>}
-      </div>
-    </div>
-  );
-}
-
+/* ---- MAIN APP COMPONENT ---- */
 function App() {
   const [session, setSession] = useState(null);
   const [messages, setMessages] = useState([]);
@@ -484,14 +1218,17 @@ function App() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState('dark');
   const [sheetPicker, setSheetPicker] = useState(null);
+  const [previewModalOpen, setPreviewModalOpen] = useState(false);
+  const [columnFilter, setColumnFilter] = useState('');
   const [serverStatus, setServerStatus] = useState('checking'); // 'checking' | 'waking' | 'ready' | 'error'
+
   const messagesEnd = useRef();
   const textareaRef = useRef();
 
   useEffect(() => { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
   useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
 
-  // Background server pre-warming on page load
+  // Background server pre-warming on mount
   useEffect(() => {
     let isMounted = true;
     const timer = setTimeout(() => {
@@ -501,11 +1238,8 @@ function App() {
     const checkHealth = async () => {
       try {
         const res = await fetch(`${API}/health`, { cache: 'no-store' });
-        if (res.ok && isMounted) {
-          setServerStatus('ready');
-        } else if (isMounted) {
-          setServerStatus('error');
-        }
+        if (res.ok && isMounted) setServerStatus('ready');
+        else if (isMounted) setServerStatus('error');
       } catch (e) {
         if (isMounted) setServerStatus('error');
       } finally {
@@ -591,7 +1325,7 @@ function App() {
         error: data.error,
       }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'ai', content: 'Something went wrong. Please try again.', error: 'Failed to fetch' }]);
+      setMessages(prev => [...prev, { role: 'ai', content: 'Connection failed. Please verify backend is running.', error: 'Failed to fetch' }]);
     } finally { setLoading(false); }
   };
 
@@ -600,113 +1334,190 @@ function App() {
     if (session) fetch(`${API}/session/${session.session_id}`, { method: 'DELETE' });
   };
 
-  const onKeyDown = (e) => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); sendMessage(); } };
-  const onInputChange = (e) => { setInput(e.target.value); e.target.style.height = 'auto'; e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px'; };
+  const onKeyDown = (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  };
 
-  const suggestions = session?.suggestions?.length ? session.suggestions : DEFAULT_SUGGESTIONS;
+  const onInputChange = (e) => {
+    setInput(e.target.value);
+    e.target.style.height = 'auto';
+    e.target.style.height = Math.min(e.target.scrollHeight, 120) + 'px';
+  };
+
+  const appendColumnToInput = (colName) => {
+    setInput(prev => prev ? `${prev} '${colName}'` : `Show me data for '${colName}'`);
+    if (textareaRef.current) textareaRef.current.focus();
+  };
+
+  const filteredColumns = session?.column_names?.filter(c => 
+    c.toLowerCase().includes(columnFilter.toLowerCase())
+  ) || [];
 
   return (
     <>
-      {sheetPicker && (
-        <div className="modal-overlay" onClick={() => !uploading && setSheetPicker(null)}>
-          <div className="modal-card" onClick={e => e.stopPropagation()}>
-            <div className="modal-title">Choose a sheet</div>
-            <div className="modal-sub">
-              <strong>{sheetPicker.filename}</strong> has {sheetPicker.sheets.length} sheets. Pick one to analyze.
+      {/* Raw Data Preview Modal */}
+      {previewModalOpen && session && (
+        <div className="modal-backdrop" onClick={() => setPreviewModalOpen(false)}>
+          <div className="modal-window" onClick={e => e.stopPropagation()} style={{maxWidth: '840px'}}>
+            <div className="modal-head">
+              <h3>Raw Data Preview (First Records)</h3>
+              <button className="icon-btn" onClick={() => setPreviewModalOpen(false)}>✕</button>
             </div>
-            <div className="sheet-list">
-              {sheetPicker.sheets.map(s => (
-                <button className="sheet-btn" key={s} onClick={() => selectSheet(s)} disabled={uploading}>
-                  {uploading ? '⏳ Loading...' : `📄 ${s}`}
-                </button>
-              ))}
+            <div className="modal-body">
+              <DataTable table={{
+                columns: session.column_names,
+                rows: session.preview?.map(r => session.column_names.map(c => r[c])) || []
+              }} />
             </div>
-            <button className="modal-cancel" onClick={() => setSheetPicker(null)} disabled={uploading}>Cancel</button>
           </div>
         </div>
       )}
-      <header>
-        <div className="logo">
-          <div className="logo-mark">⚡</div>
-          <div className="logo-name">Query<em>za</em></div>
-        </div>
-        <div className="header-right">
-          <div className="header-pill">
-            <span className={`status-dot ${serverStatus}`}></span>
-            {serverStatus === 'waking' ? 'Waking up AI engine...' : 
-             serverStatus === 'ready' ? 'AI Engine Ready' : 
-             serverStatus === 'error' ? 'Server connecting...' : 
-             'Checking AI engine...'}
+
+      {/* Multi-Sheet Picker Modal */}
+      {sheetPicker && (
+        <div className="modal-backdrop" onClick={() => !uploading && setSheetPicker(null)}>
+          <div className="modal-window" onClick={e => e.stopPropagation()}>
+            <div className="modal-head">
+              <h3>Select a Worksheet</h3>
+              <button className="icon-btn" onClick={() => setSheetPicker(null)} disabled={uploading}>✕</button>
+            </div>
+            <div className="modal-body">
+              <p style={{marginBottom: '16px', color: 'var(--text-secondary)'}}>
+                <strong>{sheetPicker.filename}</strong> contains {sheetPicker.sheets.length} sheets. Choose one to analyze:
+              </p>
+              <div className="sheet-options">
+                {sheetPicker.sheets.map(s => (
+                  <button className="sheet-option-btn" key={s} onClick={() => selectSheet(s)} disabled={uploading}>
+                    <span><Icons.Sheet /> {s}</span>
+                    <span>→</span>
+                  </button>
+                ))}
+              </div>
+            </div>
           </div>
-          <button className="theme-toggle" onClick={toggleTheme} title="Toggle theme">
-            {theme === 'dark' ? '☀️' : '🌙'}
+        </div>
+      )}
+
+      {/* Header */}
+      <header>
+        <div className="brand" onClick={() => setSession(null)}>
+          <div className="brand-icon"><Icons.Logo /></div>
+          <div className="brand-text">
+            Queryza
+            <span className="brand-badge">STUDIO</span>
+          </div>
+        </div>
+
+        <div className="header-actions">
+          <div className="status-pill">
+            <span className={`status-dot ${serverStatus}`}></span>
+            {serverStatus === 'waking' ? 'Waking backend...' : 
+             serverStatus === 'ready' ? 'Connected' : 
+             serverStatus === 'error' ? 'Connecting...' : 'Checking...'}
+          </div>
+
+          {session && (
+            <button className="header-btn" onClick={() => setPreviewModalOpen(true)} title="View top rows of dataset">
+              <Icons.Eye /> Preview
+            </button>
+          )}
+
+          {session && (
+            <button className="icon-btn" onClick={clearChat} title="Clear conversation history">
+              <Icons.Trash />
+            </button>
+          )}
+
+          <button className="icon-btn" onClick={toggleTheme} title="Toggle theme">
+            {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
           </button>
         </div>
       </header>
 
-      <div className="app-body">
-        {session && (
-          <div className="sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-            <span>{sidebarOpen ? '▲ Hide panel' : '▼ File & questions'}</span>
-            <span style={{color:'var(--accent)', maxWidth:160, overflow:'hidden', textOverflow:'ellipsis', whiteSpace:'nowrap'}}>{session.filename}</span>
-          </div>
-        )}
+      {/* Mobile Drawer Toggle */}
+      {session && (
+        <div className="mobile-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
+          <span>{sidebarOpen ? 'Hide Dataset Inspector' : 'Show Dataset Inspector'}</span>
+          <span style={{color: 'var(--accent-text)'}}>{session.filename}</span>
+        </div>
+      )}
 
+      {/* Main Workspace */}
+      <div className="app-workspace">
+        {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-section">
-            <div className="sidebar-label">📁 Your File</div>
+            <div className="section-title">Dataset Source</div>
             {!session ? (
-              <div className={`upload-zone ${dragOver ? 'drag-over' : ''}`}
+              <div 
+                className={`file-dropzone ${dragOver ? 'drag-active' : ''}`}
                 onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}>
+                onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
+              >
                 <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
-                <span className="upload-icon">{uploading ? '⏳' : '📊'}</span>
-                <div className="upload-title">
-                  {uploading ? (serverStatus === 'waking' ? 'Waking up server & uploading...' : 'Uploading...') : 'Drop your file here'}
-                </div>
-                <div className="upload-sub">CSV, XLSX, XLS · max 25 MB</div>
+                <div className="dropzone-icon"><Icons.Upload /></div>
+                <div className="dropzone-title">{uploading ? 'Processing dataset...' : 'Upload Data'}</div>
+                <div className="dropzone-meta">CSV, XLSX, XLS · Max 25 MB</div>
               </div>
             ) : (
-              <div className="file-info">
-                <div className="file-icon-row">
-                  <div className="file-dot"></div>
-                  <div className="file-name">{session.filename}</div>
+              <div className="dataset-card">
+                <div className="dataset-header">
+                  <div className="dataset-icon"><Icons.Sheet /></div>
+                  <div className="dataset-filename" title={session.filename}>{session.filename}</div>
                 </div>
-                <div className="file-meta">
-                  <span className="file-tag">{session.rows.toLocaleString()} rows</span>
-                  <span className="file-tag">{session.columns} cols</span>
+                <div className="dataset-stats">
+                  <span className="stat-badge">{session.rows.toLocaleString()} rows</span>
+                  <span className="stat-badge">{session.columns} columns</span>
                 </div>
-                <div className="file-change" onClick={() => setSession(null)}>← Upload different file</div>
+                <div className="dataset-switch-btn" onClick={() => setSession(null)}>
+                  ← Upload another file
+                </div>
               </div>
             )}
           </div>
 
           {session && (
             <div className="sidebar-section">
-              <div className="sidebar-label">🗂 Columns</div>
-              <div className="col-list">
-                {session.column_names.map(col => (
-                  <div className="col-item" key={col}>
-                    <span className="col-name">{col}</span>
-                    <span className="col-badge">col</span>
+              <div className="section-title">
+                <span>Schema ({filteredColumns.length})</span>
+              </div>
+              <div className="column-search">
+                <span className="column-search-icon"><Icons.Search /></span>
+                <input 
+                  type="text" 
+                  placeholder="Filter columns..." 
+                  value={columnFilter}
+                  onChange={e => setColumnFilter(e.target.value)}
+                />
+              </div>
+              <div className="column-list">
+                {filteredColumns.map(col => (
+                  <div 
+                    className="column-row" 
+                    key={col}
+                    onClick={() => appendColumnToInput(col)}
+                    title="Click to insert column name"
+                  >
+                    <span className="column-name">{col}</span>
+                    <span className="col-type-tag tag-txt">COL</span>
                   </div>
                 ))}
               </div>
             </div>
           )}
 
-          {session && (
+          {session && session.suggestions && session.suggestions.length > 0 && (
             <div className="sidebar-section">
-              <div style={{display:'flex', justifyContent:'space-between', alignItems:'center', marginBottom:'12px'}}>
-                <div className="sidebar-label" style={{margin:0}}>💡 Try asking</div>
-                <button onClick={clearChat} style={{background:'rgba(244,63,94,0.1)', border:'1px solid rgba(244,63,94,0.3)', borderRadius:'7px', color:'var(--danger)', fontSize:'10px', cursor:'pointer', padding:'4px 10px', fontFamily:'JetBrains Mono, monospace', transition:'all 0.2s'}}>🗑 Clear</button>
-              </div>
-              <div className="suggestions">
-                {suggestions.map((s, i) => (
-                  <button className="suggestion-btn" key={i} onClick={() => sendMessage(s)}>
-                    <span style={{flex:1}}>{s}</span>
-                    <span className="suggestion-arrow">→</span>
+              <div className="section-title">Suggested Inquiries</div>
+              <div className="prompts-list">
+                {session.suggestions.map((s, i) => (
+                  <button className="prompt-chip" key={i} onClick={() => sendMessage(s)}>
+                    <span>{s}</span>
+                    <span className="prompt-arrow">→</span>
                   </button>
                 ))}
               </div>
@@ -714,66 +1525,106 @@ function App() {
           )}
         </aside>
 
-        <div className="chat-area">
+        {/* Chat / Analysis Canvas */}
+        <main className="chat-workspace">
           {!session ? (
-            <div className="empty-state">
-              <div className="empty-orb">⚡</div>
-              <div className="empty-title">Ask your data<br/><span>anything</span></div>
-              <div className="empty-sub">Upload a CSV or Excel file (max 25 MB) and start asking questions in plain English. No SQL. No formulas. Just ask.</div>
-              <div className={`empty-upload ${dragOver ? 'drag-over' : ''}`}
+            <div className="hero-container">
+              <div className="hero-badge">
+                <Icons.Logo /> Intelligent Analytical Studio
+              </div>
+              <h1 className="hero-title">
+                Ask your data <br /><span>anything in plain English</span>
+              </h1>
+              <p className="hero-desc">
+                Upload your CSV or Excel workbook. Queryza executes Python analysis, computes metrics, and renders interactive Plotly visualizations automatically.
+              </p>
+
+              <div 
+                className={`hero-upload-card ${dragOver ? 'drag-active' : ''}`}
                 onDragOver={e => { e.preventDefault(); setDragOver(true); }}
                 onDragLeave={() => setDragOver(false)}
-                onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}>
+                onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
+              >
                 <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
-                <div className="empty-upload-text">
-                  {uploading 
-                    ? (serverStatus === 'waking' ? '⏳ Waking up AI engine & loading file (almost ready)...' : '⏳ Uploading & analyzing file...') 
-                    : '📊 Click or drop your file here — Get started free'}
+                <div className="hero-upload-icon"><Icons.Upload /></div>
+                <div style={{fontWeight: 700, fontSize: '15px', marginBottom: '4px'}}>
+                  {uploading ? 'Analyzing dataset schema...' : 'Drop your spreadsheet here or click to browse'}
+                </div>
+                <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>
+                  Supports CSV, XLSX, XLS up to 100,000 rows
                 </div>
               </div>
             </div>
           ) : (
             <>
-              <div className="messages">
+              <div className="messages-stream">
                 {messages.length === 0 && (
-                  <div style={{textAlign:'center', color:'var(--text3)', fontSize:13, padding:'32px 0', fontFamily:'JetBrains Mono, monospace'}}>
-                    ✓ file loaded — ask your first question
-                    {suggestions.length > 0 && (
-                      <div style={{marginTop:20, display:'flex', flexWrap:'wrap', gap:8, justifyContent:'center', maxWidth:560, margin:'20px auto 0'}}>
-                        {suggestions.slice(0, 3).map((s, i) => (
-                          <button key={i} onClick={() => sendMessage(s)} style={{
-                            background:'var(--surface2)', border:'1px solid var(--border2)', borderRadius:20,
-                            padding:'8px 14px', fontSize:12, color:'var(--text2)', cursor:'pointer',
-                            fontFamily:'Space Grotesk, sans-serif', transition:'all 0.2s'
-                          }}>{s}</button>
-                        ))}
-                      </div>
-                    )}
+                  <div style={{textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0', fontSize: '13px'}}>
+                    Dataset loaded. Ask a question below or choose a suggested inquiry.
                   </div>
                 )}
-                {messages.map((msg, i) => <Message key={i} msg={msg} theme={theme} />)}
+
+                {messages.map((msg, i) => (
+                  <div className={`msg-row ${msg.role}`} key={i}>
+                    {msg.role === 'ai' && (
+                      <div className="msg-avatar ai"><Icons.Logo /></div>
+                    )}
+                    {msg.role === 'user' ? (
+                      <div className="msg-bubble-user">{msg.content}</div>
+                    ) : (
+                      <StudioResultCard msg={msg} theme={theme} />
+                    )}
+                  </div>
+                ))}
+
                 {loading && (
-                  <div className="msg ai">
-                    <div className="msg-avatar">⚡</div>
-                    <div className="msg-bubble"><div className="typing"><div className="typing-dot"/><div className="typing-dot"/><div className="typing-dot"/></div></div>
+                  <div className="msg-row ai">
+                    <div className="msg-avatar ai"><Icons.Logo /></div>
+                    <div className="msg-card-ai" style={{padding: '12px 16px', maxWidth: '180px'}}>
+                      <div className="typing-box">
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
+                        <div className="typing-dot" />
+                      </div>
+                    </div>
                   </div>
                 )}
                 <div ref={messagesEnd} />
               </div>
-              <div className="input-bar">
-                <div className="input-wrap">
-                  <textarea ref={textareaRef} rows={1} placeholder="Ask anything about your data..." value={input} onChange={onInputChange} onKeyDown={onKeyDown} disabled={loading} />
-                  <button className="send-btn" onClick={() => sendMessage()} disabled={loading || !input.trim()}>↑</button>
+
+              {/* Floating Input Dock */}
+              <div className="input-dock">
+                <div className="input-box">
+                  <textarea
+                    ref={textareaRef}
+                    rows={1}
+                    placeholder="Ask a question or request a visualization..."
+                    value={input}
+                    onChange={onInputChange}
+                    onKeyDown={onKeyDown}
+                    disabled={loading}
+                  />
+                  <button 
+                    className="send-btn" 
+                    onClick={() => sendMessage()} 
+                    disabled={loading || !input.trim()}
+                    title="Send inquiry"
+                  >
+                    <Icons.Send />
+                  </button>
                 </div>
-                <div className="input-hint">Enter to send · Shift+Enter for new line</div>
+                <div className="input-shortcuts">
+                  Press ↵ Enter to send · ⇧ Shift+Enter for new line
+                </div>
               </div>
             </>
           )}
-        </div>
+        </main>
       </div>
     </>
   );
 }
+
 ReactDOM.createRoot(document.getElementById('root')).render(<App />);
 </script>
 </body>
