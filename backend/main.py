@@ -16,7 +16,7 @@ MAX_FILE_BYTES = 25 * 1024 * 1024
 MAX_ROWS = 100_000
 MAX_COLUMNS = 500
 MAX_CODE_RETRIES = 2
-LLM_MODELS = ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-pro"]
+LLM_MODELS = ["gemini-2.0-flash", "gemini-1.5-flash", "gemini-1.5-flash-8b"]
 
 app = FastAPI(title="Queryza API")
 app.add_middleware(
