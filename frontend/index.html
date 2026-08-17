@@ -1238,7 +1238,11 @@ function App() {
   const [uploading, setUploading] = useState(false);
   const [dragOver, setDragOver] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [theme, setTheme] = useState('dark');
+  const [theme, setTheme] = useState(() => {
+    try {
+      return localStorage.getItem('queryza_theme_v1') || 'dark';
+    } catch { return 'dark'; }
+  });
   const [sheetPicker, setSheetPicker] = useState(null);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [columnFilter, setColumnFilter] = useState('');
@@ -1249,6 +1253,9 @@ function App() {
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    try {
+      localStorage.setItem('queryza_theme_v1', theme);
+    } catch (e) {}
   }, [theme]);
 
   // Persist session to localStorage
