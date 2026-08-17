@@ -88,13 +88,15 @@
       font-size: 14px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
+      overflow: hidden;
       transition: background var(--transition), color var(--transition);
     }
 
     #root {
-      height: 100%;
+      height: 100vh;
       display: flex;
       flex-direction: column;
+      overflow: hidden;
     }
 
     /* ---- SCROLLBARS ---- */
@@ -240,6 +242,8 @@
       display: grid;
       grid-template-columns: 300px 1fr;
       overflow: hidden;
+      min-height: 0;
+      height: calc(100vh - 56px);
       position: relative;
     }
 
@@ -251,6 +255,7 @@
       flex-direction: column;
       overflow-y: auto;
       height: 100%;
+      min-height: 0;
     }
 
     .sidebar-section {
@@ -486,13 +491,17 @@
       display: flex;
       flex-direction: column;
       height: 100%;
+      min-height: 0;
+      overflow: hidden;
       position: relative;
       background: var(--bg);
     }
 
     .messages-stream {
-      flex: 1;
+      flex: 1 1 auto;
       overflow-y: auto;
+      overflow-x: hidden;
+      min-height: 0;
       padding: 24px;
       display: flex;
       flex-direction: column;
@@ -797,8 +806,7 @@
     .input-dock {
       padding: 16px 24px;
       background: linear-gradient(to top, var(--bg) 70%, transparent);
-      position: sticky;
-      bottom: 0;
+      position: relative;
       z-index: 30;
       flex-shrink: 0;
     }
@@ -1063,7 +1071,7 @@ const Icons = {
 };
 
 /* ---- PLOTLY WRAPPER ---- */
-function PlotlyChart({ data, theme, onDownload }) {
+function PlotlyChart({ data, theme }) {
   const ref = useRef();
   useEffect(() => {
     const el = ref.current;
@@ -1099,7 +1107,7 @@ function PlotlyChart({ data, theme, onDownload }) {
 }
 
 /* ---- DATA TABLE VIEW ---- */
-function DataTable({ table, onExport }) {
+function DataTable({ table }) {
   if (!table || !table.columns) return null;
   return (
     <div className="table-container">
@@ -1209,8 +1217,22 @@ function StudioResultCard({ msg, theme }) {
 
 /* ---- MAIN APP COMPONENT ---- */
 function App() {
-  const [session, setSession] = useState(null);
-  const [messages, setMessages] = useState([]);
+  // Restore persisted session from localStorage on refresh
+  const [session, setSession] = useState(() => {
+    try {
+      const saved = localStorage.getItem('queryza_session_v1');
+      return saved ? JSON.parse(saved) : null;
+    } catch { return null; }
+  });
+
+  // Restore persisted messages from localStorage on refresh
+  const [messages, setMessages] = useState(() => {
+    try {
+      const saved = localStorage.getItem('queryza_messages_v1');
+      return saved ? JSON.parse(saved) : [];
+    } catch { return []; }
+  });
+
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -1220,13 +1242,47 @@ function App() {
   const [sheetPicker, setSheetPicker] = useState(null);
   const [previewModalOpen, setPreviewModalOpen] = useState(false);
   const [columnFilter, setColumnFilter] = useState('');
-  const [serverStatus, setServerStatus] = useState('checking'); // 'checking' | 'waking' | 'ready' | 'error'
+  const [serverStatus, setServerStatus] = useState('checking');
 
-  const messagesEnd = useRef();
+  const messagesStreamRef = useRef();
   const textareaRef = useRef();
 
-  useEffect(() => { document.documentElement.setAttribute('data-theme', theme); }, [theme]);
-  useEffect(() => { messagesEnd.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages, loading]);
+  useEffect(() => {
+    document.documentElement.setAttribute('data-theme', theme);
+  }, [theme]);
+
+  // Persist session to localStorage
+  useEffect(() => {
+    try {
+      if (session) {
+        localStorage.setItem('queryza_session_v1', JSON.stringify(session));
+      } else {
+        localStorage.removeItem('queryza_session_v1');
+      }
+    } catch (e) {}
+  }, [session]);
+
+  // Persist messages to localStorage
+  useEffect(() => {
+    try {
+      if (messages && messages.length > 0) {
+        localStorage.setItem('queryza_messages_v1', JSON.stringify(messages));
+      } else {
+        localStorage.removeItem('queryza_messages_v1');
+      }
+    } catch (e) {}
+  }, [messages]);
+
+  // Smooth scroll to bottom only when a new message is added or loading starts
+  const scrollToBottom = () => {
+    if (messagesStreamRef.current) {
+      messagesStreamRef.current.scrollTop = messagesStreamRef.current.scrollHeight;
+    }
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages.length, loading]);
 
   // Background server pre-warming on mount
   useEffect(() => {
@@ -1255,6 +1311,8 @@ function App() {
   const applySession = (data) => {
     setSession(data);
     setMessages([]);
+    localStorage.setItem('queryza_session_v1', JSON.stringify(data));
+    localStorage.removeItem('queryza_messages_v1');
     setSidebarOpen(false);
     setSheetPicker(null);
     setServerStatus('ready');
@@ -1302,7 +1360,8 @@ function App() {
   const sendMessage = async (text) => {
     const q = (text || input).trim();
     if (!q || !session || loading) return;
-    setInput(''); setSidebarOpen(false);
+    setInput('');
+    setSidebarOpen(false);
     setMessages(prev => [...prev, { role: 'user', content: q }]);
     setLoading(true);
     try {
@@ -1331,7 +1390,15 @@ function App() {
 
   const clearChat = () => {
     setMessages([]);
+    localStorage.removeItem('queryza_messages_v1');
     if (session) fetch(`${API}/session/${session.session_id}`, { method: 'DELETE' });
+  };
+
+  const handleResetDataset = () => {
+    setSession(null);
+    setMessages([]);
+    localStorage.removeItem('queryza_session_v1');
+    localStorage.removeItem('queryza_messages_v1');
   };
 
   const onKeyDown = (e) => {
@@ -1403,7 +1470,7 @@ function App() {
 
       {/* Header */}
       <header>
-        <div className="brand" onClick={() => setSession(null)}>
+        <div className="brand" onClick={handleResetDataset}>
           <div className="brand-icon"><Icons.Logo /></div>
           <div className="brand-text">
             Queryza
@@ -1473,7 +1540,7 @@ function App() {
                   <span className="stat-badge">{session.rows.toLocaleString()} rows</span>
                   <span className="stat-badge">{session.columns} columns</span>
                 </div>
-                <div className="dataset-switch-btn" onClick={() => setSession(null)}>
+                <div className="dataset-switch-btn" onClick={handleResetDataset}>
                   ← Upload another file
                 </div>
               </div>
@@ -1557,7 +1624,7 @@ function App() {
             </div>
           ) : (
             <>
-              <div className="messages-stream">
+              <div className="messages-stream" ref={messagesStreamRef}>
                 {messages.length === 0 && (
                   <div style={{textAlign: 'center', color: 'var(--text-muted)', padding: '40px 0', fontSize: '13px'}}>
                     Dataset loaded. Ask a question below or choose a suggested inquiry.
@@ -1589,7 +1656,6 @@ function App() {
                     </div>
                   </div>
                 )}
-                <div ref={messagesEnd} />
               </div>
 
               {/* Floating Input Dock */}
