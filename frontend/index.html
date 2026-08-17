@@ -1256,7 +1256,7 @@ function DataTable({ table }) {
 }
 
 /* ---- STUDIO CARD (TABBED RESULT) ---- */
-function StudioResultCard({ msg, theme, accent }) {
+function StudioResultCard({ msg, theme, accent, onReupload }) {
   const [activeTab, setActiveTab] = useState(msg.chart ? 'chart' : msg.table ? 'table' : 'code');
   const [copiedCode, setCopiedCode] = useState(false);
 
