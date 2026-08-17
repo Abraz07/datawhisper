@@ -517,3 +517,11 @@ Write a SHORT, FRIENDLY, plain English description of what this dataset is about
 @app.get("/health")
 async def health():
     return {"status": "ok"}
+
+@app.get("/models")
+async def list_models():
+    try:
+        models = [m.name for m in client.models.list()]
+        return {"status": "ok", "models": models}
+    except Exception as e:
+        return {"status": "error", "detail": str(e)}
