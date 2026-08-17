@@ -45,6 +45,40 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
     )
 
 sessions = {}
+SESSION_DIR = "/tmp/queryza_sessions"
+os.makedirs(SESSION_DIR, exist_ok=True)
+
+def save_session_to_disk(session_id: str, df: pd.DataFrame, display_name: str, summary: str, history: list):
+    try:
+        session_path = os.path.join(SESSION_DIR, session_id)
+        os.makedirs(session_path, exist_ok=True)
+        df.to_pickle(os.path.join(session_path, "df.pkl"))
+        with open(os.path.join(session_path, "meta.json"), "w") as f:
+            json.dump({"filename": display_name, "summary": summary, "history": history}, f)
+    except Exception as e:
+        print(f"Failed to save session to disk: {e}")
+
+def get_session(session_id: str):
+    if session_id in sessions:
+        return sessions[session_id]
+    session_path = os.path.join(SESSION_DIR, session_id)
+    df_file = os.path.join(session_path, "df.pkl")
+    meta_file = os.path.join(session_path, "meta.json")
+    if os.path.exists(df_file) and os.path.exists(meta_file):
+        try:
+            df = pd.read_pickle(df_file)
+            with open(meta_file, "r") as f:
+                meta = json.load(f)
+            sessions[session_id] = {
+                "df": df,
+                "filename": meta.get("filename", "Dataset"),
+                "summary": meta.get("summary", ""),
+                "history": meta.get("history", []),
+            }
+            return sessions[session_id]
+        except Exception as e:
+            print(f"Failed to restore session from disk: {e}")
+    return None
 
 class QueryRequest(BaseModel):
     session_id: str
@@ -149,12 +183,14 @@ def preview_records(df: pd.DataFrame) -> list[dict]:
 def create_session(filename: str, df: pd.DataFrame, sheet: str | None = None):
     session_id = str(uuid.uuid4())
     display_name = f"{filename} ({sheet})" if sheet else filename
+    summary = df_summary(df)
     sessions[session_id] = {
         "df": df,
         "filename": display_name,
-        "summary": df_summary(df),
+        "summary": summary,
         "history": [],
     }
+    save_session_to_disk(session_id, df, display_name, summary, [])
     return {
         "session_id": session_id,
         "filename": display_name,
@@ -453,7 +489,7 @@ async def upload_file(file: UploadFile = File(...), sheet: str | None = Form(Non
 
 @app.delete("/session/{session_id}")
 async def clear_session(session_id: str):
-    session = sessions.get(session_id)
+    session = get_session(session_id)
     if not session:
         raise HTTPException(status_code=404, detail="Session not found.")
     session["history"] = []
@@ -461,9 +497,9 @@ async def clear_session(session_id: str):
 
 @app.post("/query", response_model=QueryResponse)
 async def query(request: QueryRequest):
-    session = sessions.get(request.session_id)
+    session = get_session(request.session_id)
     if not session:
-        raise HTTPException(status_code=404, detail="Session not found.")
+        raise HTTPException(status_code=404, detail="Session expired or server restarted. Please re-upload your file to continue.")
     df = session["df"]
     summary = session["summary"]
     history = session["history"]

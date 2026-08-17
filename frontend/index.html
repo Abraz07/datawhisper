@@ -1335,8 +1335,17 @@ function StudioResultCard({ msg, theme, accent }) {
       )}
 
       {msg.error && (
-        <div style={{color: 'var(--rose)', fontSize: '12px', background: 'var(--rose-subtle)', padding: '8px 12px', borderRadius: '6px'}}>
+        <div style={{color: 'var(--rose)', fontSize: '12px', background: 'var(--rose-subtle)', padding: '8px 12px', borderRadius: '6px', marginTop: '4px'}}>
           {msg.error}
+        </div>
+      )}
+
+      {msg.sessionExpired && onReupload && (
+        <div style={{marginTop: '8px', display: 'flex', gap: '8px'}}>
+          <label className="header-btn" style={{cursor: 'pointer', background: 'var(--accent)', color: '#ffffff', border: 'none', padding: '6px 14px'}}>
+            <Icons.Upload /> Re-upload Spreadsheet
+            <input type="file" accept=".csv,.xlsx,.xls" style={{display: 'none'}} onChange={e => onReupload(e.target.files[0])} />
+          </label>
         </div>
       )}
     </div>
@@ -1513,6 +1522,14 @@ function App() {
       });
       const data = await res.json();
       if (!res.ok) {
+        if (res.status === 404) {
+          setMessages(prev => [...prev, {
+            role: 'ai',
+            content: 'Your dataset session has expired on the server. Please re-upload your spreadsheet below to resume analysis.',
+            sessionExpired: true
+          }]);
+          return;
+        }
         const msg = typeof data.detail === 'string' ? data.detail : 'Something went wrong. Please try again.';
         setMessages(prev => [...prev, { role: 'ai', content: msg, error: msg }]);
         return;
@@ -1790,7 +1807,7 @@ function App() {
                     {msg.role === 'user' ? (
                       <div className="msg-bubble-user">{msg.content}</div>
                     ) : (
-                      <StudioResultCard msg={msg} theme={theme} accent={accent} />
+                      <StudioResultCard msg={msg} theme={theme} accent={accent} onReupload={handleFile} />
                     )}
                   </div>
                 ))}
