@@ -679,52 +679,65 @@
     .column-list {
       display: flex;
       flex-direction: column;
-      gap: 5px;
-      max-height: 240px;
+      gap: 6px;
+      max-height: 260px;
       overflow-y: auto;
     }
     .column-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 7px 10px;
+      padding: 8px 12px;
       border-radius: 8px;
       background: var(--surface);
       border: 1px solid var(--border-subtle);
       font-size: 12.5px;
       cursor: pointer;
       transition: all var(--transition);
+      width: 100%;
+      min-width: 0;
     }
     .column-row:hover {
       background: var(--surface-hover);
-      border-color: var(--border-hover);
+      border-color: var(--accent);
       transform: translateX(2px);
     }
     .column-name-box {
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 8px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
+      min-width: 0;
+      flex: 1;
+      margin-right: 8px;
     }
     .column-type-icon {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 700;
       font-family: var(--font-mono);
-      opacity: 0.8;
+      flex-shrink: 0;
       width: 14px;
       text-align: center;
     }
+    .column-name {
+      font-weight: 600;
+      color: var(--text-primary);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      min-width: 0;
+    }
     .col-type-tag {
       font-family: var(--font-mono);
-      font-size: 9.5px;
+      font-size: 10px;
       font-weight: 700;
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       text-transform: uppercase;
       flex-shrink: 0;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
     }
     .tag-num { background: rgba(124, 92, 252, 0.15); color: #a78bfa; border: 1px solid rgba(124, 92, 252, 0.3); }
     .tag-txt { background: rgba(0, 229, 195, 0.12); color: #00e5c3; border: 1px solid rgba(0, 229, 195, 0.25); }
@@ -3086,93 +3099,31 @@ function App() {
                   {filteredColumns.map(col => {
                     const previewVals = session.preview ? session.preview.map(r => r[col]).filter(v => v !== null && v !== undefined && v !== '') : [];
                     const isNumeric = previewVals.length > 0 && previewVals.every(v => !isNaN(Number(v)));
-                    let stats = null;
+                    let tooltip = `${col} (${isNumeric ? 'NUMBER' : 'TEXT'}) · Click to insert into query`;
                     if (isNumeric && previewVals.length > 0) {
                       const numVals = previewVals.map(Number);
                       const min = Math.min(...numVals);
                       const max = Math.max(...numVals);
-                      const avg = (numVals.reduce((a, b) => a + b, 0) / numVals.length).toFixed(2);
-                      stats = { min, max, avg, type: 'NUMBER' };
-                    } else {
-                      const uniqueCount = new Set(previewVals).size;
-                      stats = { unique: uniqueCount, type: 'TEXT' };
+                      const avg = (numVals.reduce((a, b) => a + b, 0) / numVals.length).toFixed(1);
+                      tooltip = `${col} (NUMBER) · Min: ${min} · Max: ${max} · Avg: ${avg}`;
                     }
 
                     return (
-                      <div className="col-row-wrapper" key={col}>
-                        <div 
-                          className="column-row" 
-                          style={{flex: 1}}
-                          onClick={() => appendColumnToInput(col)}
-                          title="Click to insert column name"
-                        >
-                          <div className="column-name-box">
-                            <span className="column-type-icon" style={{color: isNumeric ? '#a78bfa' : '#00e5c3'}}>
-                              {isNumeric ? '#' : 'T'}
-                            </span>
-                            <span className="column-name">{col}</span>
-                          </div>
-                          <span className={`col-type-tag ${isNumeric ? 'tag-num' : 'tag-txt'}`}>
-                            {isNumeric ? 'NUMBER' : 'TEXT'}
+                      <div 
+                        className="column-row" 
+                        key={col}
+                        onClick={() => appendColumnToInput(col)}
+                        title={tooltip}
+                      >
+                        <div className="column-name-box">
+                          <span className="column-type-icon" style={{color: isNumeric ? '#a78bfa' : '#00e5c3'}}>
+                            {isNumeric ? '#' : 'T'}
                           </span>
+                          <span className="column-name">{col}</span>
                         </div>
-                        <button 
-                          className="col-info-btn"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setActiveColPopover(activeColPopover === col ? null : col);
-                          }}
-                          title="Inspect column stats"
-                        >
-                          ⓘ
-                        </button>
-                        {activeColPopover === col && stats && (
-                          <div className="col-popover" onClick={e => e.stopPropagation()}>
-                            <div className="col-popover-title">
-                              <span>{col}</span>
-                              <span style={{cursor: 'pointer', opacity: 0.6}} onClick={() => setActiveColPopover(null)}>✕</span>
-                            </div>
-                            <div className="col-stat-row">
-                              <span>Data Type:</span>
-                              <span className="col-stat-val">{stats.type}</span>
-                            </div>
-                            <div className="col-stat-row">
-                              <span>Sampled:</span>
-                              <span className="col-stat-val">{previewVals.length} non-null</span>
-                            </div>
-                            {isNumeric ? (
-                              <>
-                                <div className="col-stat-row">
-                                  <span>Min:</span>
-                                  <span className="col-stat-val">{stats.min}</span>
-                                </div>
-                                <div className="col-stat-row">
-                                  <span>Max:</span>
-                                  <span className="col-stat-val">{stats.max}</span>
-                                </div>
-                                <div className="col-stat-row">
-                                  <span>Mean (Avg):</span>
-                                  <span className="col-stat-val">{stats.avg}</span>
-                                </div>
-                              </>
-                            ) : (
-                              <div className="col-stat-row">
-                                <span>Unique Values:</span>
-                                <span className="col-stat-val">{stats.unique} unique</span>
-                              </div>
-                            )}
-                            <button 
-                              className="header-btn" 
-                              style={{marginTop: '4px', padding: '4px 8px', fontSize: '11px', justifyContent: 'center', background: 'var(--accent)', color: '#04060d', border: 'none', borderRadius: '6px', fontWeight: 700}}
-                              onClick={() => {
-                                setActiveColPopover(null);
-                                sendMessage(`Show me a summary and distribution for '${col}'`);
-                              }}
-                            >
-                              ⚡ Analyze '{col}'
-                            </button>
-                          </div>
-                        )}
+                        <span className={`col-type-tag ${isNumeric ? 'tag-num' : 'tag-txt'}`}>
+                          {isNumeric ? 'NUMBER' : 'TEXT'}
+                        </span>
                       </div>
                     );
                   })}
