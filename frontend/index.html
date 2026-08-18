@@ -1982,6 +1982,18 @@ function App() {
     const form = new FormData();
     form.append('file', file);
     try {
+      // Cache file locally for silent background recovery if server restarts
+      try {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            localStorage.setItem('queryza_active_file_data_v1', e.target.result);
+            localStorage.setItem('queryza_active_file_name_v1', file.name);
+          } catch (err) {}
+        };
+        reader.readAsDataURL(file);
+      } catch (err) {}
+
       const data = await uploadForm(form);
       if (data.needs_sheet) {
         setSheetPicker({ file, sheets: data.sheets, filename: data.filename });
@@ -2045,10 +2057,39 @@ function App() {
     setMessages(prev => [...prev, { role: 'user', content: q }]);
     setLoading(true);
     try {
-      const res = await fetch(`${API}/query`, {
+      let currentSessionId = session.session_id;
+      let res = await fetch(`${API}/query`, {
         method: 'POST', headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ session_id: session.session_id, question: q }),
+        body: JSON.stringify({ session_id: currentSessionId, question: q }),
       });
+
+      // If backend restarted / session expired, attempt silent background auto-recovery
+      if (res.status === 404) {
+        const cachedDataUrl = localStorage.getItem('queryza_active_file_data_v1');
+        const cachedFilename = localStorage.getItem('queryza_active_file_name_v1') || 'dataset.csv';
+        if (cachedDataUrl) {
+          try {
+            const blobRes = await fetch(cachedDataUrl);
+            const blob = await blobRes.blob();
+            const autoFile = new File([blob], cachedFilename);
+            const autoForm = new FormData();
+            autoForm.append('file', autoFile);
+            const newSession = await uploadForm(autoForm);
+            setSession(newSession);
+            localStorage.setItem('queryza_session_v1', JSON.stringify(newSession));
+            currentSessionId = newSession.session_id;
+            
+            // Retry the question with recovered session
+            res = await fetch(`${API}/query`, {
+              method: 'POST', headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ session_id: currentSessionId, question: q }),
+            });
+          } catch (autoErr) {
+            console.warn("Silent recovery failed:", autoErr);
+          }
+        }
+      }
+
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 404) {
