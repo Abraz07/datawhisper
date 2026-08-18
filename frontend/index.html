@@ -172,21 +172,24 @@
 
     html, body {
       height: 100%;
+      height: 100dvh;
       background: var(--bg);
       color: var(--text-primary);
       font-family: var(--font-sans);
       font-size: 14px;
       line-height: 1.5;
       -webkit-font-smoothing: antialiased;
-      overflow: hidden;
       transition: background var(--transition), color var(--transition);
+      overflow: hidden;
     }
 
     #root {
-      height: 100vh;
+      height: 100%;
+      height: 100dvh;
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
     }
 
     /* ---- SCROLLBARS ---- */
@@ -364,12 +367,11 @@
 
     /* ---- MAIN LAYOUT ---- */
     .app-workspace {
-      flex: 1;
+      flex: 1 1 0%;
       display: grid;
       grid-template-columns: 300px 1fr;
       overflow: hidden;
       min-height: 0;
-      height: calc(100vh - 56px);
       position: relative;
     }
 
@@ -637,7 +639,7 @@
     }
 
     .messages-stream {
-      flex: 1 1 auto;
+      flex: 1 1 0%;
       overflow-y: auto;
       overflow-x: hidden;
       min-height: 0;
@@ -645,6 +647,8 @@
       display: flex;
       flex-direction: column;
       gap: 20px;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
     }
 
     /* ---- EMPTY STATE ---- */
@@ -954,8 +958,8 @@
 
     /* ---- FLOATING INPUT DOCK ---- */
     .input-dock {
-      padding: 16px 24px;
-      background: linear-gradient(to top, var(--bg) 70%, transparent);
+      padding: 14px 20px;
+      background: linear-gradient(to top, var(--bg) 80%, transparent);
       position: relative;
       z-index: 30;
       flex-shrink: 0;
@@ -1097,6 +1101,7 @@
       justify-content: space-between;
       align-items: center;
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .sidebar-backdrop {
@@ -1105,10 +1110,10 @@
 
     @media (max-width: 768px) {
       header {
-        height: 52px;
-        padding: 0 12px;
+        height: 50px;
+        padding: 0 10px;
       }
-      .brand-text { font-size: 15px; }
+      .brand-text { font-size: 14px; }
       .brand-badge { display: none; }
       
       .status-pill { padding: 4px 6px; }
@@ -1125,16 +1130,29 @@
       }
 
       .app-workspace {
-        grid-template-columns: 1fr;
-        height: calc(100vh - 52px);
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0%;
+        min-height: 0;
+        height: auto;
+        overflow: hidden;
+      }
+
+      .chat-workspace {
+        display: flex;
+        flex-direction: column;
+        flex: 1 1 0%;
+        min-height: 0;
+        overflow: hidden;
+        position: relative;
       }
 
       .sidebar {
         position: fixed;
         left: 0;
-        top: 52px;
+        top: 50px;
         bottom: 0;
-        width: 82%;
+        width: 84%;
         max-width: 300px;
         background: var(--surface-elevated);
         z-index: 60;
@@ -1152,7 +1170,7 @@
       .sidebar-backdrop {
         display: block;
         position: fixed;
-        inset: 52px 0 0 0;
+        inset: 50px 0 0 0;
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
@@ -1164,8 +1182,13 @@
       }
 
       .messages-stream {
-        padding: 14px 12px 80px;
-        gap: 14px;
+        flex: 1 1 0%;
+        min-height: 0;
+        overflow-y: auto;
+        padding: 12px 10px 14px;
+        gap: 12px;
+        -webkit-overflow-scrolling: touch;
+        overscroll-behavior-y: contain;
       }
 
       .msg-row { gap: 8px; }
@@ -1174,12 +1197,15 @@
       .msg-card-ai { padding: 12px; border-radius: 10px; }
       .ai-explanation { font-size: 13px; }
 
-      .chart-container { min-height: 280px; }
-      .table-container { max-height: 250px; font-size: 11px; }
+      .chart-container { min-height: 260px; max-height: 320px; }
+      .table-container { max-height: 230px; font-size: 11px; }
       .code-viewer { font-size: 11px; padding: 10px; }
 
       .input-dock {
-        padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+        padding: 8px 10px max(10px, env(safe-area-inset-bottom));
+        background: var(--bg);
+        border-top: 1px solid var(--border-subtle);
+        flex-shrink: 0;
       }
       .input-box {
         padding: 6px 10px;
@@ -1187,15 +1213,15 @@
       }
       .input-box textarea {
         font-size: 14px;
-        min-height: 22px;
-        max-height: 90px;
+        min-height: 24px;
+        max-height: 80px;
       }
       .input-shortcuts {
         display: none;
       }
 
       .hero-container {
-        padding: 24px 12px;
+        padding: 20px 12px;
       }
       .hero-title {
         font-size: 24px;
@@ -1203,10 +1229,10 @@
       }
       .hero-desc {
         font-size: 13px;
-        margin-bottom: 20px;
+        margin-bottom: 18px;
       }
       .hero-upload-card {
-        padding: 24px 14px;
+        padding: 20px 12px;
       }
 
       .modal-backdrop {
@@ -1339,6 +1365,11 @@ const Icons = {
   Eye: () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>
+    </svg>
+  ),
+  Reload: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M23 4v6h-6"/><path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"/>
     </svg>
   )
 };
@@ -1600,6 +1631,10 @@ function App() {
 
   const toggleTheme = () => setTheme(t => t === 'dark' ? 'light' : 'dark');
 
+  const handleRefresh = () => {
+    window.location.reload();
+  };
+
   const applySession = (data) => {
     setSession(data);
     setMessages([]);
@@ -1811,6 +1846,10 @@ function App() {
 
           <button className="icon-btn" onClick={toggleTheme} title="Toggle Dark/Light theme">
             {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
+          </button>
+
+          <button className="icon-btn" onClick={handleRefresh} title="Reload page">
+            <Icons.Reload />
           </button>
         </div>
       </header>
