@@ -1775,6 +1775,79 @@
         margin-bottom: 16px !important;
       }
     }
+
+    /* ---- LIVING DATA FIELD (SIGNATURE BACKGROUND) ---- */
+    .living-bg-container {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .aurora-blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.45;
+      transition: opacity 1.5s ease;
+      will-change: transform;
+    }
+    .aurora-1 {
+      width: 650px;
+      height: 650px;
+      background: radial-gradient(circle, rgba(0, 229, 195, 0.12), transparent 70%);
+      top: -120px;
+      right: 5%;
+      animation: driftAurora1 35s infinite alternate ease-in-out;
+    }
+    .aurora-2 {
+      width: 750px;
+      height: 750px;
+      background: radial-gradient(circle, rgba(124, 92, 252, 0.11), transparent 70%);
+      bottom: -200px;
+      left: -5%;
+      animation: driftAurora2 42s infinite alternate ease-in-out;
+    }
+    .aurora-3 {
+      width: 550px;
+      height: 550px;
+      background: radial-gradient(circle, rgba(6, 182, 212, 0.08), transparent 70%);
+      top: 35%;
+      left: 30%;
+      animation: driftAurora3 48s infinite alternate ease-in-out;
+    }
+
+    @keyframes driftAurora1 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-80px, 60px) scale(1.1); }
+      100% { transform: translate(40px, 100px) scale(0.95); }
+    }
+    @keyframes driftAurora2 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(100px, -70px) scale(1.15); }
+      100% { transform: translate(-50px, -40px) scale(0.9); }
+    }
+    @keyframes driftAurora3 {
+      0% { transform: translate(0, 0) scale(1); }
+      50% { transform: translate(-60px, -50px) scale(1.2); }
+      100% { transform: translate(70px, 40px) scale(0.85); }
+    }
+
+    .cursor-glow {
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(600px circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(0, 229, 195, 0.032), transparent 75%);
+      pointer-events: none;
+      transition: opacity 0.5s ease;
+    }
+
+    .living-canvas {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+    }
   </style>
 </head>
 <body>
@@ -2294,6 +2367,157 @@ const SAMPLE_DATASETS = [
   }
 ];
 
+/* ---- LIVING DATA FIELD CANVAS COMPONENT ---- */
+function LivingDataField({ loading, uploading }) {
+  const canvasRef = useRef(null);
+
+  useEffect(() => {
+    // Mouse atmospheric glow tracking
+    const handleMouseMove = (e) => {
+      document.documentElement.style.setProperty('--mouse-x', `${e.clientX}px`);
+      document.documentElement.style.setProperty('--mouse-y', `${e.clientY}px`);
+    };
+    window.addEventListener('mousemove', handleMouseMove, { passive: true });
+    return () => window.removeEventListener('mousemove', handleMouseMove);
+  }, []);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    let animationFrameId;
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    const handleResize = () => {
+      if (!canvas) return;
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    };
+    window.addEventListener('resize', handleResize);
+
+    // Generate 45 faint data nodes
+    const nodeCount = Math.min(45, Math.floor((width * height) / 25000));
+    const nodes = Array.from({ length: Math.max(25, nodeCount) }, () => ({
+      x: Math.random() * width,
+      y: Math.random() * height,
+      vx: (Math.random() - 0.5) * 0.35,
+      vy: (Math.random() - 0.5) * 0.35,
+      radius: Math.random() * 1.5 + 1,
+      alpha: Math.random() * 0.35 + 0.15,
+      isSpecial: Math.random() > 0.85,
+      pulse: Math.random() * Math.PI
+    }));
+
+    let pulses = [];
+    let lastPulseTime = Date.now();
+
+    const render = () => {
+      if (document.hidden) {
+        animationFrameId = requestAnimationFrame(render);
+        return;
+      }
+
+      ctx.clearRect(0, 0, width, height);
+
+      // Speed boost factor when loading / uploading
+      const speedMultiplier = loading ? 2.2 : uploading ? 1.8 : 1.0;
+      const primaryColor = loading ? '124, 92, 252' : '0, 229, 195';
+
+      // Update and draw nodes
+      for (let i = 0; i < nodes.length; i++) {
+        const node = nodes[i];
+        node.x += node.vx * speedMultiplier;
+        node.y += node.vy * speedMultiplier;
+        node.pulse += 0.02;
+
+        // Wrap around screen boundaries
+        if (node.x < 0) node.x = width;
+        if (node.x > width) node.x = 0;
+        if (node.y < 0) node.y = height;
+        if (node.y > height) node.y = 0;
+
+        const dynamicAlpha = node.alpha + Math.sin(node.pulse) * 0.08;
+
+        // Draw node
+        ctx.beginPath();
+        ctx.arc(node.x, node.y, node.isSpecial ? node.radius * 1.4 : node.radius, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(${node.isSpecial ? '124, 92, 252' : primaryColor}, ${dynamicAlpha})`;
+        ctx.fill();
+
+        // Connect nearby nodes
+        for (let j = i + 1; j < nodes.length; j++) {
+          const other = nodes[j];
+          const dx = other.x - node.x;
+          const dy = other.y - node.y;
+          const distSq = dx * dx + dy * dy;
+          const maxDist = 120;
+
+          if (distSq < maxDist * maxDist) {
+            const dist = Math.sqrt(distSq);
+            const lineAlpha = (1 - dist / maxDist) * 0.07;
+            ctx.beginPath();
+            ctx.moveTo(node.x, node.y);
+            ctx.lineTo(other.x, other.y);
+            ctx.strokeStyle = `rgba(${primaryColor}, ${lineAlpha})`;
+            ctx.lineWidth = 0.75;
+            ctx.stroke();
+
+            // Random micro-pulse along connection
+            if (Date.now() - lastPulseTime > 1200 && Math.random() < 0.008 && pulses.length < 5) {
+              pulses.push({
+                x1: node.x, y1: node.y,
+                x2: other.x, y2: other.y,
+                progress: 0,
+                speed: 0.015
+              });
+              lastPulseTime = Date.now();
+            }
+          }
+        }
+      }
+
+      // Draw active pulses traveling across connections
+      for (let p = pulses.length - 1; p >= 0; p--) {
+        const pulse = pulses[p];
+        pulse.progress += pulse.speed;
+        if (pulse.progress >= 1) {
+          pulses.splice(p, 1);
+          continue;
+        }
+        const curX = pulse.x1 + (pulse.x2 - pulse.x1) * pulse.progress;
+        const curY = pulse.y1 + (pulse.y2 - pulse.y1) * pulse.progress;
+        ctx.beginPath();
+        ctx.arc(curX, curY, 1.8, 0, Math.PI * 2);
+        ctx.fillStyle = `rgba(0, 229, 195, 0.45)`;
+        ctx.shadowColor = '#00e5c3';
+        ctx.shadowBlur = 4;
+        ctx.fill();
+        ctx.shadowBlur = 0;
+      }
+
+      animationFrameId = requestAnimationFrame(render);
+    };
+
+    animationFrameId = requestAnimationFrame(render);
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, [loading, uploading]);
+
+  return (
+    <div className="living-bg-container" aria-hidden="true">
+      <div className="aurora-blob aurora-1" style={{ opacity: loading ? 0.6 : 0.4 }} />
+      <div className="aurora-blob aurora-2" style={{ opacity: loading ? 0.55 : 0.35 }} />
+      <div className="aurora-blob aurora-3" style={{ opacity: loading ? 0.45 : 0.3 }} />
+      <div className="cursor-glow" />
+      <canvas ref={canvasRef} className="living-canvas" />
+    </div>
+  );
+}
+
 /* ---- MAIN APP COMPONENT ---- */
 function App() {
   // Auth state
@@ -2751,6 +2975,9 @@ function App() {
 
   return (
     <>
+      {/* Living Data Field Background */}
+      <LivingDataField loading={loading} uploading={uploading} />
+
       {/* Auth / Sign In Modal */}
       {authModalOpen && !user && (
         <div className="modal-backdrop" onClick={() => setAuthModalOpen(false)}>
