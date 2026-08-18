@@ -1601,6 +1601,26 @@ const Icons = {
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
     </svg>
+  ),
+  ThumbsUp: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 9V5a3 3 0 0 0-3-3l-4 9v11h11.28a2 2 0 0 0 2-1.7l1.38-9a2 2 0 0 0-2-2.3zM7 22H4a2 2 0 0 1-2-2v-7a2 2 0 0 1 2-2h3"/>
+    </svg>
+  ),
+  ThumbsDown: () => (
+    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M10 15v4a3 3 0 0 0 3 3l4-9V2H5.72a2 2 0 0 0-2 1.7l-1.38 9a2 2 0 0 0 2 2.3zm7-13h3a2 2 0 0 1 2 2v7a2 2 0 0 1-2 2h-3"/>
+    </svg>
+  ),
+  MessageSquare: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+    </svg>
+  ),
+  Star: ({ filled }) => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "#f59e0b" : "none"} stroke={filled ? "#f59e0b" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
+    </svg>
   )
 };
 
@@ -1668,6 +1688,16 @@ function DataTable({ table }) {
 function StudioResultCard({ msg, theme, accent, onReupload }) {
   const [activeTab, setActiveTab] = useState(msg.chart ? 'chart' : msg.table ? 'table' : 'code');
   const [copiedCode, setCopiedCode] = useState(false);
+  const [feedback, setFeedback] = useState(null);
+
+  const handleFeedback = (type) => {
+    setFeedback(type);
+    try {
+      const stored = JSON.parse(localStorage.getItem('queryza_card_feedback_v1') || '[]');
+      stored.push({ type, time: new Date().toISOString(), snippet: msg.content?.slice(0, 80) });
+      localStorage.setItem('queryza_card_feedback_v1', JSON.stringify(stored));
+    } catch (e) {}
+  };
 
   const copyCode = () => {
     if (!msg.code) return;
@@ -1707,6 +1737,20 @@ function StudioResultCard({ msg, theme, accent, onReupload }) {
             <button className="tool-btn" onClick={copyCode} title="Copy generated Python code">
               {copiedCode ? <Icons.Check /> : <Icons.Copy />} {copiedCode ? 'Copied' : 'Code'}
             </button>
+          )}
+          {feedback ? (
+            <span style={{fontSize: '11px', color: 'var(--accent-text)', display: 'inline-flex', alignItems: 'center', gap: '3px', background: 'var(--accent-subtle)', padding: '2px 7px', borderRadius: '4px'}}>
+              ✓ Thanks!
+            </span>
+          ) : (
+            <div style={{display: 'inline-flex', gap: '4px'}}>
+              <button className="tool-btn" onClick={() => handleFeedback('up')} title="Helpful response">
+                <Icons.ThumbsUp />
+              </button>
+              <button className="tool-btn" onClick={() => handleFeedback('down')} title="Could be better">
+                <Icons.ThumbsDown />
+              </button>
+            </div>
           )}
         </div>
       </div>
@@ -1785,8 +1829,35 @@ function App() {
 
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
+  const [feedbackModalOpen, setFeedbackModalOpen] = useState(false);
+  const [feedbackStars, setFeedbackStars] = useState(5);
+  const [feedbackCategory, setFeedbackCategory] = useState('✨ Feature Request');
+  const [feedbackComment, setFeedbackComment] = useState('');
+  const [feedbackSent, setFeedbackSent] = useState(false);
+
   const [pendingUploadFile, setPendingUploadFile] = useState(null);
   const [pendingQuery, setPendingQuery] = useState(null);
+
+  const submitGlobalFeedback = (e) => {
+    e.preventDefault();
+    try {
+      const stored = JSON.parse(localStorage.getItem('queryza_user_feedbacks_v1') || '[]');
+      stored.push({
+        stars: feedbackStars,
+        category: feedbackCategory,
+        comment: feedbackComment,
+        user: user?.email || 'Guest',
+        timestamp: new Date().toISOString()
+      });
+      localStorage.setItem('queryza_user_feedbacks_v1', JSON.stringify(stored));
+    } catch (err) {}
+    setFeedbackSent(true);
+    setTimeout(() => {
+      setFeedbackSent(false);
+      setFeedbackModalOpen(false);
+      setFeedbackComment('');
+    }, 2000);
+  };
 
   const [session, setSession] = useState(() => {
     try {
@@ -2205,6 +2276,105 @@ function App() {
         </div>
       )}
 
+      {/* Global Feedback Modal */}
+      {feedbackModalOpen && (
+        <div className="modal-backdrop" onClick={() => !feedbackSent && setFeedbackModalOpen(false)}>
+          <div className="modal-window auth-modal-card" onClick={e => e.stopPropagation()} style={{maxWidth: '440px'}}>
+            <div className="modal-head">
+              <h3 style={{display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', fontWeight: 700}}>
+                <span style={{color: 'var(--accent)'}}><Icons.MessageSquare /></span> Share Feedback & Ratings
+              </h3>
+              <button className="icon-btn" onClick={() => setFeedbackModalOpen(false)}>✕</button>
+            </div>
+            <div className="modal-body">
+              {feedbackSent ? (
+                <div style={{textAlign: 'center', padding: '24px 10px'}}>
+                  <div style={{width: '46px', height: '46px', borderRadius: '50%', background: 'var(--accent-subtle)', color: 'var(--accent-text)', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 12px', fontSize: '20px', fontWeight: 800}}>
+                    ✓
+                  </div>
+                  <h3 style={{fontSize: '17px', fontWeight: 700, marginBottom: '6px'}}>Thank You!</h3>
+                  <p style={{fontSize: '13px', color: 'var(--text-secondary)'}}>Your rating and feedback help make Queryza better for everyone.</p>
+                </div>
+              ) : (
+                <form onSubmit={submitGlobalFeedback}>
+                  <div style={{textAlign: 'center', marginBottom: '16px'}}>
+                    <div style={{fontSize: '12px', color: 'var(--text-secondary)', marginBottom: '8px'}}>How would you rate your experience?</div>
+                    <div style={{display: 'flex', justifyContent: 'center', gap: '8px'}}>
+                      {[1, 2, 3, 4, 5].map((star) => (
+                        <button 
+                          type="button"
+                          key={star} 
+                          style={{background: 'transparent', border: 'none', cursor: 'pointer', padding: '3px', transform: feedbackStars >= star ? 'scale(1.15)' : 'scale(1)', transition: 'transform 0.15s'}}
+                          onClick={() => setFeedbackStars(star)}
+                          title={`${star} Star${star > 1 ? 's' : ''}`}
+                        >
+                          <Icons.Star filled={feedbackStars >= star} />
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{marginBottom: '14px'}}>
+                    <div style={{fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase'}}>CATEGORY</div>
+                    <div style={{display: 'flex', gap: '6px', flexWrap: 'wrap'}}>
+                      {['✨ Feature Request', '💡 General Feedback', '🐛 Bug Report', '📊 Data Quality'].map(cat => (
+                        <button
+                          type="button"
+                          key={cat}
+                          onClick={() => setFeedbackCategory(cat)}
+                          style={{
+                            padding: '4px 9px',
+                            borderRadius: '6px',
+                            border: '1px solid ' + (feedbackCategory === cat ? 'var(--accent)' : 'var(--border)'),
+                            background: feedbackCategory === cat ? 'var(--accent-subtle)' : 'var(--surface)',
+                            color: feedbackCategory === cat ? 'var(--accent-text)' : 'var(--text-secondary)',
+                            fontSize: '11px',
+                            fontWeight: feedbackCategory === cat ? 600 : 400,
+                            cursor: 'pointer'
+                          }}
+                        >
+                          {cat}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div style={{marginBottom: '16px'}}>
+                    <div style={{fontSize: '10px', fontFamily: 'var(--font-mono)', fontWeight: 600, color: 'var(--text-muted)', marginBottom: '6px', textTransform: 'uppercase'}}>COMMENTS (OPTIONAL)</div>
+                    <textarea 
+                      placeholder="What did you like or what should we improve?"
+                      value={feedbackComment}
+                      onChange={e => setFeedbackComment(e.target.value)}
+                      rows={3}
+                      style={{
+                        width: '100%',
+                        padding: '8px 10px',
+                        borderRadius: '8px',
+                        border: '1px solid var(--border)',
+                        background: 'var(--bg)',
+                        color: 'var(--text-primary)',
+                        fontSize: '12.5px',
+                        fontFamily: 'var(--font-sans)',
+                        outline: 'none',
+                        resize: 'none'
+                      }}
+                    />
+                  </div>
+
+                  <button 
+                    type="submit"
+                    className="email-submit-btn"
+                    style={{width: '100%', height: '38px', borderRadius: '8px', fontWeight: 700}}
+                  >
+                    Submit Feedback
+                  </button>
+                </form>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Raw Data Preview Modal */}
       {previewModalOpen && session && (
         <div className="modal-backdrop" onClick={() => setPreviewModalOpen(false)}>
@@ -2283,6 +2453,10 @@ function App() {
             </button>
           )}
 
+          <button className="header-btn" onClick={() => setFeedbackModalOpen(true)} title="Give feedback">
+            <Icons.MessageSquare /><span className="btn-text"> Feedback</span>
+          </button>
+
           {session && (
             <button className="icon-btn" onClick={clearChat} title="Clear conversation history">
               <Icons.Trash />
@@ -2322,6 +2496,9 @@ function App() {
                     <div className="dropdown-user-email">{user.email}</div>
                     <span className="pro-badge">PRO · UNLIMITED</span>
                   </div>
+                  <button className="dropdown-signout-btn" style={{marginBottom: '4px'}} onClick={() => { setUserMenuOpen(false); setFeedbackModalOpen(true); }}>
+                    💬 Send Feedback
+                  </button>
                   <button className="dropdown-signout-btn" onClick={handleSignOut}>
                     Sign out
                   </button>
