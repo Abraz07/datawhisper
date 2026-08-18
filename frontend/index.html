@@ -1444,14 +1444,206 @@
       }
     }
 
-    @media (max-width: 480px) {
-      .accent-bar {
-        padding: 2px 4px;
-        gap: 3px;
+    /* ---- SAMPLE DATASETS CARDS ---- */
+    .sample-datasets-section {
+      margin-top: 24px;
+      width: 100%;
+      max-width: 580px;
+    }
+    .sample-datasets-label {
+      font-size: 11px;
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+    .sample-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+      gap: 10px;
+    }
+    .sample-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      cursor: pointer;
+      text-align: left;
+      transition: all var(--transition);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .sample-card:hover {
+      border-color: var(--accent);
+      background: var(--surface-hover);
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
+    }
+    .sample-icon {
+      font-size: 20px;
+      margin-bottom: 2px;
+    }
+    .sample-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+    }
+    .sample-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.3;
+    }
+    .sample-meta {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: var(--accent-text);
+      margin-top: 4px;
+      font-weight: 600;
+    }
+
+    /* ---- CHART TOOLBAR ---- */
+    .chart-toolbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 6px 10px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border-subtle);
+      border-top-left-radius: 8px;
+      border-top-right-radius: 8px;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chart-type-selector {
+      display: flex;
+      gap: 4px;
+      background: var(--bg);
+      padding: 2px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+    }
+    .chart-type-btn {
+      padding: 3px 8px;
+      font-size: 11px;
+      font-weight: 500;
+      border-radius: 4px;
+      border: none;
+      background: transparent;
+      color: var(--text-secondary);
+      cursor: pointer;
+      transition: all var(--transition);
+    }
+    .chart-type-btn:hover {
+      color: var(--text-primary);
+    }
+    .chart-type-btn.active {
+      background: var(--accent);
+      color: #ffffff;
+      font-weight: 600;
+    }
+    .chart-download-btn {
+      font-size: 11px;
+      padding: 4px 8px;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      background: var(--surface);
+      color: var(--text-secondary);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      transition: all var(--transition);
+    }
+    .chart-download-btn:hover {
+      background: var(--accent-subtle);
+      color: var(--accent-text);
+      border-color: var(--accent);
+    }
+
+    /* ---- COLUMN INSPECTOR POPOVER ---- */
+    .col-row-wrapper {
+      position: relative;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      width: 100%;
+    }
+    .col-info-btn {
+      opacity: 0.6;
+      font-size: 11px;
+      padding: 2px 4px;
+      cursor: pointer;
+      color: var(--text-muted);
+      border-radius: 4px;
+      transition: opacity var(--transition);
+    }
+    .col-row-wrapper:hover .col-info-btn {
+      opacity: 1;
+      color: var(--accent-text);
+    }
+    .col-popover {
+      position: absolute;
+      left: 100%;
+      top: -10px;
+      width: 210px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+      padding: 10px 12px;
+      z-index: 100;
+      font-size: 11.5px;
+      color: var(--text-primary);
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .col-popover-title {
+      font-weight: 700;
+      font-size: 11.5px;
+      color: var(--accent-text);
+      border-bottom: 1px solid var(--border-subtle);
+      padding-bottom: 4px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .col-stat-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: var(--text-secondary);
+    }
+    .col-stat-val {
+      font-family: var(--font-mono);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    /* ---- PRINT EXECUTIVE REPORT STYLES ---- */
+    @media print {
+      body {
+        background: #ffffff !important;
+        color: #000000 !important;
       }
-      .swatch-btn {
-        width: 12px;
-        height: 12px;
+      header, .sidebar, .input-dock, .mobile-sidebar-toggle, .header-actions, .chart-toolbar, .ai-actions, .status-pill {
+        display: none !important;
+      }
+      .app-layout, .app-workspace, .chat-view, .messages-stream {
+        height: auto !important;
+        overflow: visible !important;
+        padding: 0 !important;
+        margin: 0 !important;
+      }
+      .msg-card-ai, .msg-bubble-user {
+        border: 1px solid #cbd5e1 !important;
+        background: #ffffff !important;
+        color: #000000 !important;
+        box-shadow: none !important;
+        page-break-inside: avoid;
+        margin-bottom: 16px !important;
       }
     }
   </style>
@@ -1624,12 +1816,23 @@ const Icons = {
     <svg width="18" height="18" viewBox="0 0 24 24" fill={filled ? "#f59e0b" : "none"} stroke={filled ? "#f59e0b" : "currentColor"} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
       <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/>
     </svg>
+  ),
+  FileText: () => (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+      <polyline points="14 2 14 8 20 8"/>
+      <line x1="16" y1="13" x2="8" y2="13"/>
+      <line x1="16" y1="17" x2="8" y2="17"/>
+      <polyline points="10 9 9 9 8 9"/>
+    </svg>
   )
 };
 
-/* ---- PLOTLY WRAPPER ---- */
+/* ---- PLOTLY WRAPPER WITH TYPE SWITCHER & HD EXPORT ---- */
 function PlotlyChart({ data, theme, accent }) {
   const ref = useRef();
+  const [chartMode, setChartMode] = useState('auto');
+
   useEffect(() => {
     const el = ref.current;
     if (!el || !data) return;
@@ -1638,11 +1841,31 @@ function PlotlyChart({ data, theme, accent }) {
     const secondaryColor = getComputedStyle(document.documentElement).getPropertyValue('--chart-p2').trim() || '#06b6d4';
 
     const traces = Array.isArray(data.data) ? data.data : [];
-    const coloredData = traces.map((trace, idx) => ({
-      ...trace,
-      marker: { ...((trace.marker) || {}), color: trace.marker?.color || (idx === 0 ? primaryColor : secondaryColor) },
-      line: { ...((trace.line) || {}), color: trace.line?.color || (idx === 0 ? primaryColor : secondaryColor) }
-    }));
+    const coloredData = traces.map((trace, idx) => {
+      let t = { ...trace };
+      if (chartMode === 'bar') {
+        t.type = 'bar';
+        delete t.mode;
+        delete t.fill;
+      } else if (chartMode === 'line') {
+        t.type = 'scatter';
+        t.mode = 'lines+markers';
+        delete t.fill;
+      } else if (chartMode === 'area') {
+        t.type = 'scatter';
+        t.mode = 'lines';
+        t.fill = 'tozeroy';
+      } else if (chartMode === 'pie') {
+        t.type = 'pie';
+        t.labels = t.x || t.labels;
+        t.values = t.y || t.values;
+        t.hole = 0.4;
+      }
+      t.marker = { ...((t.marker) || {}), color: t.marker?.color || (idx === 0 ? primaryColor : secondaryColor) };
+      t.line = { ...((t.line) || {}), color: t.line?.color || (idx === 0 ? primaryColor : secondaryColor) };
+      return t;
+    });
+
     try {
       Plotly.newPlot(el, coloredData, {
         ...(data.layout || {}),
@@ -1662,8 +1885,35 @@ function PlotlyChart({ data, theme, accent }) {
         try { Plotly.purge(el); } catch (e) {}
       }
     };
-  }, [data, theme, accent]);
-  return <div ref={ref} className="chart-container" />;
+  }, [data, theme, accent, chartMode]);
+
+  const downloadHD = () => {
+    if (!ref.current) return;
+    Plotly.downloadImage(ref.current, {
+      format: 'png',
+      width: 1200,
+      height: 650,
+      filename: 'queryza_visualization'
+    });
+  };
+
+  return (
+    <div style={{position: 'relative'}}>
+      <div className="chart-toolbar">
+        <div className="chart-type-selector">
+          <button className={`chart-type-btn ${chartMode === 'auto' ? 'active' : ''}`} onClick={() => setChartMode('auto')}>Original</button>
+          <button className={`chart-type-btn ${chartMode === 'bar' ? 'active' : ''}`} onClick={() => setChartMode('bar')}>Bar</button>
+          <button className={`chart-type-btn ${chartMode === 'line' ? 'active' : ''}`} onClick={() => setChartMode('line')}>Line</button>
+          <button className={`chart-type-btn ${chartMode === 'area' ? 'active' : ''}`} onClick={() => setChartMode('area')}>Area</button>
+          <button className={`chart-type-btn ${chartMode === 'pie' ? 'active' : ''}`} onClick={() => setChartMode('pie')}>Donut</button>
+        </div>
+        <button className="chart-download-btn" onClick={downloadHD} title="Download high-resolution PNG image">
+          📷 HD PNG
+        </button>
+      </div>
+      <div ref={ref} className="chart-container" />
+    </div>
+  );
 }
 
 /* ---- DATA TABLE VIEW ---- */
@@ -1821,6 +2071,94 @@ function StudioResultCard({ msg, theme, accent, onReupload }) {
   );
 }
 
+/* ---- SAMPLE PRE-PACKAGED DATASETS ---- */
+const SAMPLE_DATASETS = [
+  {
+    name: "🛒 E-Commerce Orders",
+    desc: "Tech gadgets & furniture sales, profit margins, categories & regions",
+    rows: "100 records",
+    cols: "8 columns",
+    filename: "ecommerce_sales.csv",
+    generateCsv: () => {
+      const header = "OrderID,Date,Region,Category,Product,Sales,Profit,Quantity\n";
+      const rows = [
+        "ORD-101,2024-01-05,North America,Technology,MacBook Pro,1999.99,450.00,1",
+        "ORD-102,2024-01-06,Europe,Furniture,Ergonomic Chair,299.50,65.00,2",
+        "ORD-103,2024-01-07,Asia Pacific,Technology,Wireless Mouse,49.99,18.50,5",
+        "ORD-104,2024-01-08,North America,Office Supplies,Gel Pens Pack,14.99,6.20,10",
+        "ORD-105,2024-01-10,Europe,Technology,4K Monitor,450.00,110.00,2",
+        "ORD-106,2024-01-12,Latin America,Furniture,Standing Desk,599.00,140.00,1",
+        "ORD-107,2024-01-14,Asia Pacific,Office Supplies,Notebook Set,24.99,8.50,4",
+        "ORD-108,2024-01-15,North America,Technology,Noise Cancelling Headphones,349.99,85.00,3",
+        "ORD-109,2024-01-17,Europe,Office Supplies,Laser Paper Ream,32.00,9.00,8",
+        "ORD-110,2024-01-20,North America,Furniture,Bookshelf,189.00,42.00,2"
+      ];
+      let all = [];
+      for (let i = 0; i < 10; i++) {
+        rows.forEach((r, idx) => {
+          const parts = r.split(',');
+          parts[0] = `ORD-${100 + i * 10 + idx + 1}`;
+          parts[5] = (parseFloat(parts[5]) * (1 + (i % 3) * 0.15)).toFixed(2);
+          all.push(parts.join(','));
+        });
+      }
+      return header + all.join('\n');
+    }
+  },
+  {
+    name: "🚀 SaaS MRR & Churn",
+    desc: "Monthly Recurring Revenue, growth rate, CAC, retention & tiers",
+    rows: "36 months",
+    cols: "7 columns",
+    filename: "saas_metrics.csv",
+    generateCsv: () => {
+      const header = "Month,Tier,Active_Users,MRR_USD,New_Signups,Churn_Rate_Pct,CAC_USD\n";
+      const rows = [
+        "2023-01,Enterprise,1200,48000,140,2.1,350",
+        "2023-02,Enterprise,1310,52400,165,1.9,340",
+        "2023-03,Enterprise,1450,58000,190,1.8,320",
+        "2023-04,Pro,2800,42000,310,3.4,120",
+        "2023-05,Pro,3050,45750,340,3.1,115",
+        "2023-06,Pro,3300,49500,380,2.9,110",
+        "2023-07,Starter,6200,31000,620,5.2,45",
+        "2023-08,Starter,6700,33500,690,4.8,42",
+        "2023-09,Starter,7300,36500,750,4.5,40",
+        "2023-10,Enterprise,1800,72000,240,1.5,300",
+        "2023-11,Enterprise,1980,79200,280,1.4,290",
+        "2023-12,Enterprise,2200,88000,320,1.2,280"
+      ];
+      return header + rows.join('\n');
+    }
+  },
+  {
+    name: "🎬 Netflix Movies & Shows",
+    desc: "Movie genres, IMDb scores, runtime minutes & release years",
+    rows: "60 titles",
+    cols: "7 columns",
+    filename: "netflix_titles.csv",
+    generateCsv: () => {
+      const header = "Title,Type,Release_Year,Genre,Rating,Duration_Min,IMDB_Score\n";
+      const rows = [
+        "Stranger Things,TV Show,2016,Sci-Fi,TV-MA,55,8.7",
+        "The Queen's Gambit,TV Show,2020,Drama,TV-MA,60,8.6",
+        "Inception,Movie,2010,Action,PG-13,148,8.8",
+        "Interstellar,Movie,2014,Sci-Fi,PG-13,169,8.7",
+        "Breaking Bad,TV Show,2008,Crime,TV-MA,49,9.5",
+        "The Irishman,Movie,2019,Crime,R,209,7.8",
+        "Extraction,Movie,2020,Action,R,116,6.8",
+        "Glass Onion,Movie,2022,Comedy,PG-13,139,7.1",
+        "Cyberpunk Edgerunners,TV Show,2022,Animation,TV-MA,24,8.3",
+        "Black Mirror,TV Show,2011,Sci-Fi,TV-MA,60,8.8"
+      ];
+      let all = [];
+      for (let i = 0; i < 6; i++) {
+        rows.forEach(r => all.push(r));
+      }
+      return header + all.join('\n');
+    }
+  }
+];
+
 /* ---- MAIN APP COMPONENT ---- */
 function App() {
   // Auth state
@@ -1850,9 +2188,21 @@ function App() {
   const [feedbackCategory, setFeedbackCategory] = useState('✨ Feature Request');
   const [feedbackComment, setFeedbackComment] = useState('');
   const [feedbackSent, setFeedbackSent] = useState(false);
+  const [activeColPopover, setActiveColPopover] = useState(null);
 
   const [pendingUploadFile, setPendingUploadFile] = useState(null);
   const [pendingQuery, setPendingQuery] = useState(null);
+
+  const loadSampleDataset = (sample) => {
+    const csvContent = sample.generateCsv();
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const file = new File([blob], sample.filename, { type: 'text/csv' });
+    handleFile(file);
+  };
+
+  const exportExecutiveReport = () => {
+    window.print();
+  };
 
   const submitGlobalFeedback = async (e) => {
     e.preventDefault();
@@ -2482,6 +2832,12 @@ function App() {
             </button>
           )}
 
+          {session && (
+            <button className="header-btn" onClick={exportExecutiveReport} title="Print or export executive analysis report">
+              <Icons.FileText /><span className="btn-text"> Report</span>
+            </button>
+          )}
+
           <button className="header-btn" onClick={() => setFeedbackModalOpen(true)} title="Give feedback">
             <Icons.MessageSquare /><span className="btn-text"> Feedback</span>
           </button>
@@ -2610,17 +2966,92 @@ function App() {
                 />
               </div>
               <div className="column-list">
-                {filteredColumns.map(col => (
-                  <div 
-                    className="column-row" 
-                    key={col}
-                    onClick={() => appendColumnToInput(col)}
-                    title="Click to insert column name"
-                  >
-                    <span className="column-name">{col}</span>
-                    <span className="col-type-tag tag-txt">COL</span>
-                  </div>
-                ))}
+                {filteredColumns.map(col => {
+                  const previewVals = session.preview ? session.preview.map(r => r[col]).filter(v => v !== null && v !== undefined && v !== '') : [];
+                  const isNumeric = previewVals.length > 0 && previewVals.every(v => !isNaN(Number(v)));
+                  let stats = null;
+                  if (isNumeric && previewVals.length > 0) {
+                    const numVals = previewVals.map(Number);
+                    const min = Math.min(...numVals);
+                    const max = Math.max(...numVals);
+                    const avg = (numVals.reduce((a, b) => a + b, 0) / numVals.length).toFixed(2);
+                    stats = { min, max, avg, type: 'Numeric' };
+                  } else {
+                    const uniqueCount = new Set(previewVals).size;
+                    stats = { unique: uniqueCount, type: 'Categorical' };
+                  }
+
+                  return (
+                    <div className="col-row-wrapper" key={col}>
+                      <div 
+                        className="column-row" 
+                        style={{flex: 1}}
+                        onClick={() => appendColumnToInput(col)}
+                        title="Click to insert column name"
+                      >
+                        <span className="column-name">{col}</span>
+                        <span className="col-type-tag tag-txt">{isNumeric ? 'NUM' : 'TXT'}</span>
+                      </div>
+                      <button 
+                        className="col-info-btn"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setActiveColPopover(activeColPopover === col ? null : col);
+                        }}
+                        title="Inspect column stats"
+                      >
+                        ⓘ
+                      </button>
+                      {activeColPopover === col && stats && (
+                        <div className="col-popover" onClick={e => e.stopPropagation()}>
+                          <div className="col-popover-title">
+                            <span>{col}</span>
+                            <span style={{cursor: 'pointer', opacity: 0.6}} onClick={() => setActiveColPopover(null)}>✕</span>
+                          </div>
+                          <div className="col-stat-row">
+                            <span>Type:</span>
+                            <span className="col-stat-val">{stats.type}</span>
+                          </div>
+                          <div className="col-stat-row">
+                            <span>Sampled:</span>
+                            <span className="col-stat-val">{previewVals.length} non-null</span>
+                          </div>
+                          {isNumeric ? (
+                            <>
+                              <div className="col-stat-row">
+                                <span>Min:</span>
+                                <span className="col-stat-val">{stats.min}</span>
+                              </div>
+                              <div className="col-stat-row">
+                                <span>Max:</span>
+                                <span className="col-stat-val">{stats.max}</span>
+                              </div>
+                              <div className="col-stat-row">
+                                <span>Mean (Avg):</span>
+                                <span className="col-stat-val">{stats.avg}</span>
+                              </div>
+                            </>
+                          ) : (
+                            <div className="col-stat-row">
+                              <span>Unique Values:</span>
+                              <span className="col-stat-val">{stats.unique} unique</span>
+                            </div>
+                          )}
+                          <button 
+                            className="header-btn" 
+                            style={{marginTop: '4px', padding: '4px 8px', fontSize: '11px', justifyContent: 'center', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '5px'}}
+                            onClick={() => {
+                              setActiveColPopover(null);
+                              sendMessage(`Show me a summary and distribution for '${col}'`);
+                            }}
+                          >
+                            ⚡ Analyze '{col}'
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
               </div>
             </div>
           )}
@@ -2667,6 +3098,21 @@ function App() {
                 </div>
                 <div style={{fontSize: '12px', color: 'var(--text-muted)'}}>
                   Supports CSV, XLSX, XLS up to 100,000 rows
+                </div>
+              </div>
+
+              {/* 1-Click Sample Datasets */}
+              <div className="sample-datasets-section">
+                <div className="sample-datasets-label">OR EXPLORE A 1-CLICK SAMPLE DATASET:</div>
+                <div className="sample-grid">
+                  {SAMPLE_DATASETS.map((sample) => (
+                    <div className="sample-card" key={sample.name} onClick={() => loadSampleDataset(sample)}>
+                      <div className="sample-icon">{sample.name.split(' ')[0]}</div>
+                      <div className="sample-title">{sample.name.slice(3)}</div>
+                      <div className="sample-desc">{sample.desc}</div>
+                      <div className="sample-meta">{sample.rows} · {sample.cols}</div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
