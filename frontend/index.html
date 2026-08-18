@@ -1107,26 +1107,39 @@
     .sidebar-backdrop {
       display: none;
     }
-
     @media (max-width: 768px) {
       header {
-        height: 50px;
-        padding: 0 10px;
+        height: 52px;
+        padding: 0 12px;
       }
-      .brand-text { font-size: 14px; }
+      .brand-text { font-size: 15px; }
       .brand-badge { display: none; }
       
-      .status-pill { padding: 4px 6px; }
-      .status-pill span:not(.status-dot) { display: none; }
+      .status-pill { display: none; }
 
+      .header-actions {
+        gap: 6px;
+      }
       .header-btn {
-        height: 28px;
+        height: 32px;
         padding: 0 8px;
         font-size: 11px;
       }
+      .header-btn .btn-text {
+        display: none;
+      }
       .icon-btn {
-        width: 30px;
-        height: 30px;
+        width: 32px;
+        height: 32px;
+      }
+      .accent-bar {
+        padding: 3px 6px;
+        gap: 5px;
+        margin-right: 2px;
+      }
+      .swatch-btn {
+        width: 14px;
+        height: 14px;
       }
 
       .app-workspace {
@@ -1150,7 +1163,7 @@
       .sidebar {
         position: fixed;
         left: 0;
-        top: 50px;
+        top: 52px;
         bottom: 0;
         width: 84%;
         max-width: 300px;
@@ -1170,7 +1183,7 @@
       .sidebar-backdrop {
         display: block;
         position: fixed;
-        inset: 50px 0 0 0;
+        inset: 52px 0 0 0;
         background: rgba(0, 0, 0, 0.6);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
@@ -1202,19 +1215,21 @@
       .code-viewer { font-size: 11px; padding: 10px; }
 
       .input-dock {
-        padding: 8px 10px max(10px, env(safe-area-inset-bottom));
+        padding: 10px 12px max(18px, env(safe-area-inset-bottom, 18px));
         background: var(--bg);
         border-top: 1px solid var(--border-subtle);
         flex-shrink: 0;
       }
       .input-box {
-        padding: 6px 10px;
-        border-radius: 10px;
+        padding: 6px 8px 6px 12px;
+        border-radius: 12px;
+        align-items: center;
       }
       .input-box textarea {
         font-size: 14px;
         min-height: 24px;
         max-height: 80px;
+        padding: 4px 0;
       }
       .input-shortcuts {
         display: none;
@@ -1834,7 +1849,7 @@ function App() {
 
           {session && (
             <button className="header-btn" onClick={() => setPreviewModalOpen(true)} title="View top rows of dataset">
-              <Icons.Eye /> Preview
+              <Icons.Eye /><span className="btn-text"> Preview</span>
             </button>
           )}
 
