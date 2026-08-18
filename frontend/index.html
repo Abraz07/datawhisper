@@ -2,7 +2,7 @@
 <html lang="en" data-theme="dark" data-accent="emerald">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover"/>
   <title>Queryza — Conversational Data Studio</title>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react/18.2.0/umd/react.production.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/18.2.0/umd/react-dom.production.min.js"></script>
@@ -75,7 +75,6 @@
     }
 
     /* ---- ACCENT PALETTES ---- */
-    /* 1. Cyber Jade (Emerald) - Default */
     [data-accent="emerald"][data-theme="dark"], [data-accent="emerald"] {
       --accent: #10b981;
       --accent-hover: #059669;
@@ -95,7 +94,6 @@
       --chart-p2: #0891b2;
     }
 
-    /* 2. Linear Iris */
     [data-accent="iris"][data-theme="dark"] {
       --accent: #5e6ad2;
       --accent-hover: #4f46e5;
@@ -115,7 +113,6 @@
       --chart-p2: #9333ea;
     }
 
-    /* 3. Electric Cyan */
     [data-accent="cyan"][data-theme="dark"] {
       --accent: #06b6d4;
       --accent-hover: #0891b2;
@@ -135,7 +132,6 @@
       --chart-p2: #2563eb;
     }
 
-    /* 4. Anthropic Amber */
     [data-accent="amber"][data-theme="dark"] {
       --accent: #f59e0b;
       --accent-hover: #d97706;
@@ -155,7 +151,6 @@
       --chart-p2: #dc2626;
     }
 
-    /* 5. Modern Cobalt */
     [data-accent="cobalt"][data-theme="dark"] {
       --accent: #3b82f6;
       --accent-hover: #2563eb;
@@ -224,6 +219,7 @@
       text-decoration: none;
       color: var(--text-primary);
       cursor: pointer;
+      flex-shrink: 0;
     }
 
     .brand-icon {
@@ -236,6 +232,7 @@
       justify-content: center;
       color: #ffffff;
       box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      flex-shrink: 0;
     }
 
     .brand-text {
@@ -281,6 +278,7 @@
       width: 6px;
       height: 6px;
       border-radius: 50%;
+      flex-shrink: 0;
     }
     .status-dot.ready { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
     .status-dot.waking { background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: pulse 1.4s infinite; }
@@ -303,6 +301,7 @@
       justify-content: center;
       cursor: pointer;
       transition: all var(--transition);
+      flex-shrink: 0;
     }
     .icon-btn:hover {
       background: var(--surface-hover);
@@ -324,6 +323,7 @@
       color: var(--text-secondary);
       cursor: pointer;
       transition: all var(--transition);
+      flex-shrink: 0;
     }
     .header-btn:hover {
       background: var(--surface-hover);
@@ -331,7 +331,7 @@
       border-color: var(--border-hover);
     }
 
-    /* Accent Swatches Popover */
+    /* Accent Swatches */
     .accent-bar {
       display: flex;
       align-items: center;
@@ -340,6 +340,7 @@
       border: 1px solid var(--border);
       border-radius: 20px;
       padding: 3px 6px;
+      flex-shrink: 0;
     }
     .swatch-btn {
       width: 14px;
@@ -381,6 +382,19 @@
       overflow-y: auto;
       height: 100%;
       min-height: 0;
+    }
+
+    .sidebar-mobile-header {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+    }
+    .sidebar-mobile-header h4 {
+      font-size: 13px;
+      font-weight: 700;
     }
 
     .sidebar-section {
@@ -710,6 +724,7 @@
       max-width: 860px;
       width: 100%;
       margin: 0 auto;
+      word-break: break-word;
     }
     .msg-row.user {
       justify-content: flex-end;
@@ -740,7 +755,7 @@
       color: #ffffff;
       padding: 10px 16px;
       border-radius: 12px 12px 2px 12px;
-      font-size: 13px;
+      font-size: 13.5px;
       font-weight: 500;
       max-width: 600px;
       box-shadow: var(--shadow-sm);
@@ -752,6 +767,7 @@
       border-radius: 12px;
       padding: 16px;
       flex: 1;
+      min-width: 0;
       box-shadow: var(--shadow-sm);
       display: flex;
       flex-direction: column;
@@ -765,6 +781,7 @@
       border-bottom: 1px solid var(--border-subtle);
       padding-bottom: 8px;
       margin-bottom: 4px;
+      gap: 8px;
     }
     .ai-label {
       font-size: 11px;
@@ -778,6 +795,7 @@
     .ai-actions {
       display: flex;
       gap: 6px;
+      flex-shrink: 0;
     }
     .tool-btn {
       display: inline-flex;
@@ -819,6 +837,8 @@
       background: var(--surface);
       padding: 4px 8px 0;
       gap: 4px;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
     }
     .tab-btn {
       display: inline-flex;
@@ -833,6 +853,8 @@
       border-bottom: 2px solid transparent;
       cursor: pointer;
       transition: all var(--transition);
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .tab-btn:hover {
       color: var(--text-primary);
@@ -849,7 +871,7 @@
     /* Charts */
     .chart-container {
       width: 100%;
-      min-height: 380px;
+      min-height: 360px;
       border-radius: 8px;
     }
 
@@ -858,6 +880,7 @@
       width: 100%;
       max-height: 340px;
       overflow: auto;
+      -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border);
       border-radius: 6px;
     }
@@ -877,11 +900,13 @@
       position: sticky;
       top: 0;
       z-index: 2;
+      white-space: nowrap;
     }
     td {
       padding: 7px 12px;
       border-bottom: 1px solid var(--border-subtle);
       color: var(--text-secondary);
+      white-space: nowrap;
     }
     tr:nth-child(even) {
       background: var(--table-stripe);
@@ -958,7 +983,7 @@
       background: transparent;
       color: var(--text-primary);
       font-family: var(--font-sans);
-      font-size: 13.5px;
+      font-size: 14px;
       outline: none;
       resize: none;
       max-height: 140px;
@@ -1060,31 +1085,154 @@
       background: var(--accent-subtle);
     }
 
-    /* Mobile toggle */
+    /* ---- MOBILE RESPONSIVE ADAPTATIONS ---- */
     .mobile-sidebar-toggle {
       display: none;
-      padding: 8px 16px;
+      padding: 8px 14px;
       background: var(--surface);
       border-bottom: 1px solid var(--border);
       font-size: 12px;
       font-weight: 600;
       color: var(--text-secondary);
       justify-content: space-between;
+      align-items: center;
       cursor: pointer;
     }
 
+    .sidebar-backdrop {
+      display: none;
+    }
+
     @media (max-width: 768px) {
-      .app-workspace { grid-template-columns: 1fr; }
+      header {
+        height: 52px;
+        padding: 0 12px;
+      }
+      .brand-text { font-size: 15px; }
+      .brand-badge { display: none; }
+      
+      .status-pill { padding: 4px 6px; }
+      .status-pill span:not(.status-dot) { display: none; }
+
+      .header-btn {
+        height: 28px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+      .icon-btn {
+        width: 30px;
+        height: 30px;
+      }
+
+      .app-workspace {
+        grid-template-columns: 1fr;
+        height: calc(100vh - 52px);
+      }
+
       .sidebar {
         position: fixed;
-        left: 0; top: 56px; bottom: 0;
-        width: 280px;
-        z-index: 40;
+        left: 0;
+        top: 52px;
+        bottom: 0;
+        width: 82%;
+        max-width: 300px;
+        background: var(--surface-elevated);
+        z-index: 60;
+        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
         transform: translateX(-100%);
-        transition: transform var(--transition);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
-      .sidebar.open { transform: translateX(0); }
-      .mobile-sidebar-toggle { display: flex; }
+      .sidebar.open {
+        transform: translateX(0);
+      }
+      .sidebar-mobile-header {
+        display: flex;
+      }
+
+      .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 52px 0 0 0;
+        background: rgba(0, 0, 0, 0.6);
+        backdrop-filter: blur(4px);
+        -webkit-backdrop-filter: blur(4px);
+        z-index: 55;
+      }
+
+      .mobile-sidebar-toggle {
+        display: flex;
+      }
+
+      .messages-stream {
+        padding: 14px 12px 80px;
+        gap: 14px;
+      }
+
+      .msg-row { gap: 8px; }
+      .msg-avatar { width: 26px; height: 26px; font-size: 10px; }
+      .msg-bubble-user { max-width: 88%; font-size: 13px; padding: 8px 12px; }
+      .msg-card-ai { padding: 12px; border-radius: 10px; }
+      .ai-explanation { font-size: 13px; }
+
+      .chart-container { min-height: 280px; }
+      .table-container { max-height: 250px; font-size: 11px; }
+      .code-viewer { font-size: 11px; padding: 10px; }
+
+      .input-dock {
+        padding: 8px 12px max(8px, env(safe-area-inset-bottom));
+      }
+      .input-box {
+        padding: 6px 10px;
+        border-radius: 10px;
+      }
+      .input-box textarea {
+        font-size: 14px;
+        min-height: 22px;
+        max-height: 90px;
+      }
+      .input-shortcuts {
+        display: none;
+      }
+
+      .hero-container {
+        padding: 24px 12px;
+      }
+      .hero-title {
+        font-size: 24px;
+        letter-spacing: -0.5px;
+      }
+      .hero-desc {
+        font-size: 13px;
+        margin-bottom: 20px;
+      }
+      .hero-upload-card {
+        padding: 24px 14px;
+      }
+
+      .modal-backdrop {
+        padding: 10px;
+      }
+      .modal-window {
+        max-height: 85vh;
+        border-radius: 10px;
+      }
+      .modal-head {
+        padding: 12px 14px;
+      }
+      .modal-body {
+        padding: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .accent-bar {
+        padding: 2px 4px;
+        gap: 3px;
+      }
+      .swatch-btn {
+        width: 12px;
+        height: 12px;
+      }
     }
   </style>
 </head>
@@ -1216,8 +1364,8 @@ function PlotlyChart({ data, theme, accent }) {
         ...(data.layout || {}),
         paper_bgcolor: 'rgba(0,0,0,0)',
         plot_bgcolor: 'rgba(0,0,0,0)',
-        font: { family: 'Plus Jakarta Sans, sans-serif', color: isDark ? '#94a3b8' : '#475569', size: 12 },
-        margin: { t: 30, r: 20, b: 40, l: 50 },
+        font: { family: 'Plus Jakarta Sans, sans-serif', color: isDark ? '#94a3b8' : '#475569', size: 11 },
+        margin: { t: 25, r: 15, b: 35, l: 45 },
         colorway: [primaryColor, secondaryColor, '#3b82f6', '#f59e0b', '#f43f5e', '#8b5cf6'],
         xaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
         yaxis: { gridcolor: isDark ? 'rgba(255,255,255,0.06)' : 'rgba(0,0,0,0.06)', zerolinecolor: isDark ? 'rgba(255,255,255,0.08)' : 'rgba(0,0,0,0.08)' },
@@ -1354,7 +1502,6 @@ function StudioResultCard({ msg, theme, accent, onReupload }) {
 
 /* ---- MAIN APP COMPONENT ---- */
 function App() {
-  // Restore persisted session from localStorage on refresh
   const [session, setSession] = useState(() => {
     try {
       const saved = localStorage.getItem('queryza_session_v1');
@@ -1362,7 +1509,6 @@ function App() {
     } catch { return null; }
   });
 
-  // Restore persisted messages from localStorage on refresh
   const [messages, setMessages] = useState(() => {
     try {
       const saved = localStorage.getItem('queryza_messages_v1');
@@ -1370,7 +1516,6 @@ function App() {
     } catch { return []; }
   });
 
-  // Restore persisted theme & accent
   const [theme, setTheme] = useState(() => {
     try { return localStorage.getItem('queryza_theme_v1') || 'dark'; } catch { return 'dark'; }
   });
@@ -1402,7 +1547,6 @@ function App() {
     try { localStorage.setItem('queryza_accent_v1', accent); } catch (e) {}
   }, [accent]);
 
-  // Persist session to localStorage
   useEffect(() => {
     try {
       if (session) {
@@ -1413,7 +1557,6 @@ function App() {
     } catch (e) {}
   }, [session]);
 
-  // Persist messages to localStorage
   useEffect(() => {
     try {
       if (messages && messages.length > 0) {
@@ -1424,7 +1567,6 @@ function App() {
     } catch (e) {}
   }, [messages]);
 
-  // Smooth scroll to bottom only when a new message is added or loading starts
   const scrollToBottom = () => {
     if (messagesStreamRef.current) {
       messagesStreamRef.current.scrollTop = messagesStreamRef.current.scrollHeight;
@@ -1435,7 +1577,6 @@ function App() {
     scrollToBottom();
   }, [messages.length, loading]);
 
-  // Background server pre-warming on mount
   useEffect(() => {
     let isMounted = true;
     const timer = setTimeout(() => {
@@ -1638,11 +1779,13 @@ function App() {
         </div>
 
         <div className="header-actions">
-          <div className="status-pill">
+          <div className="status-pill" title={`Backend status: ${serverStatus}`}>
             <span className={`status-dot ${serverStatus}`}></span>
-            {serverStatus === 'waking' ? 'Waking backend...' : 
-             serverStatus === 'ready' ? 'Connected' : 
-             serverStatus === 'error' ? 'Connecting...' : 'Checking...'}
+            <span>
+              {serverStatus === 'waking' ? 'Waking...' : 
+               serverStatus === 'ready' ? 'Connected' : 
+               serverStatus === 'error' ? 'Connecting...' : 'Checking...'}
+            </span>
           </div>
 
           {/* Accent Color Picker */}
@@ -1672,18 +1815,32 @@ function App() {
         </div>
       </header>
 
-      {/* Mobile Drawer Toggle */}
+      {/* Mobile Drawer Toggle Bar */}
       {session && (
         <div className="mobile-sidebar-toggle" onClick={() => setSidebarOpen(!sidebarOpen)}>
-          <span>{sidebarOpen ? 'Hide Dataset Inspector' : 'Show Dataset Inspector'}</span>
-          <span style={{color: 'var(--accent-text)'}}>{session.filename}</span>
+          <span style={{display: 'flex', alignItems: 'center', gap: '6px'}}>
+            <Icons.Sheet /> {sidebarOpen ? 'Close Inspector' : 'Dataset Schema & Inquiries'}
+          </span>
+          <span style={{color: 'var(--accent-text)', fontSize: '11px', maxWidth: '140px', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap'}}>
+            {session.filename}
+          </span>
         </div>
+      )}
+
+      {/* Mobile Sidebar Backdrop */}
+      {sidebarOpen && (
+        <div className="sidebar-backdrop" onClick={() => setSidebarOpen(false)} />
       )}
 
       {/* Main Workspace */}
       <div className="app-workspace">
         {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+          <div className="sidebar-mobile-header">
+            <h4>Dataset Inspector</h4>
+            <button className="icon-btn" style={{width: '28px', height: '28px'}} onClick={() => setSidebarOpen(false)}>✕</button>
+          </div>
+
           <div className="sidebar-section">
             <div className="section-title">Dataset Source</div>
             {!session ? (
