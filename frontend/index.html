@@ -2156,24 +2156,6 @@ function App() {
               <button className="google-signin-btn" onClick={handleGoogleSignIn}>
                 <Icons.Google /> Continue with Google
               </button>
-
-              <div style={{display: 'flex', alignItems: 'center', gap: '10px', margin: '16px 0 10px'}}>
-                <div style={{flex: 1, height: '1px', background: 'var(--border)'}} />
-                <span style={{fontSize: '11px', color: 'var(--text-muted)'}}>OR WORK EMAIL</span>
-                <div style={{flex: 1, height: '1px', background: 'var(--border)'}} />
-              </div>
-
-              {/* Quick Email Form */}
-              <form onSubmit={handleEmailSignIn} className="email-quick-form">
-                <input 
-                  type="email" 
-                  placeholder="name@company.com" 
-                  className="email-quick-input"
-                  value={emailInput}
-                  onChange={e => setEmailInput(e.target.value)}
-                />
-                <button type="submit" className="email-submit-btn">Unlock</button>
-              </form>
             </div>
           </div>
         </div>
