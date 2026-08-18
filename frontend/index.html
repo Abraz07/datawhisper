@@ -24,31 +24,33 @@
       --transition: 0.2s cubic-bezier(0.16, 1, 0.3, 1);
     }
 
-    /* ---- DARK THEME BASE ---- */
+    /* ---- OBSIDIAN NAVY THEME BASE (LINEAR / VERCEL INSPIRED) ---- */
     [data-theme="dark"] {
-      --bg: #07090e;
-      --bg-subtle: #0c1017;
-      --surface: #111622;
-      --surface-hover: #171e2e;
-      --surface-active: #1d263b;
-      --surface-elevated: #141b29;
+      --bg: #050812;
+      --bg-subtle: #080d1a;
+      --surface: #0c1424;
+      --surface-hover: #121c32;
+      --surface-active: #182542;
+      --surface-elevated: #10192e;
       --border: rgba(255, 255, 255, 0.08);
       --border-subtle: rgba(255, 255, 255, 0.04);
       --border-hover: rgba(255, 255, 255, 0.16);
-      --text-primary: #f8fafc;
-      --text-secondary: #94a3b8;
+      --text-primary: #f5f7fa;
+      --text-secondary: #a1adc5;
       --text-muted: #64748b;
-      --emerald: #10b981;
-      --emerald-subtle: rgba(16, 185, 129, 0.12);
+      --emerald: #00e5c3;
+      --emerald-subtle: rgba(0, 229, 195, 0.12);
+      --violet: #7c5cfc;
+      --violet-subtle: rgba(124, 92, 252, 0.15);
       --amber: #f59e0b;
       --amber-subtle: rgba(245, 158, 11, 0.12);
       --rose: #f43f5e;
       --rose-subtle: rgba(244, 63, 94, 0.12);
-      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
-      --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
-      --shadow-lg: 0 12px 32px rgba(0, 0, 0, 0.5);
-      --glass-bg: rgba(17, 22, 34, 0.85);
-      --table-stripe: rgba(255, 255, 255, 0.02);
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.5);
+      --shadow-md: 0 4px 20px rgba(0, 0, 0, 0.5);
+      --shadow-lg: 0 12px 36px rgba(0, 0, 0, 0.6);
+      --glass-bg: rgba(8, 13, 26, 0.85);
+      --table-stripe: rgba(255, 255, 255, 0.015);
     }
 
     /* ---- LIGHT THEME BASE ---- */
@@ -67,6 +69,8 @@
       --text-muted: #94a3b8;
       --emerald: #059669;
       --emerald-subtle: rgba(5, 150, 105, 0.08);
+      --violet: #6366f1;
+      --violet-subtle: rgba(99, 102, 241, 0.1);
       --amber: #d97706;
       --amber-subtle: rgba(217, 119, 6, 0.08);
       --rose: #e11d48;
@@ -80,13 +84,13 @@
 
     /* ---- ACCENT PALETTES ---- */
     [data-accent="emerald"][data-theme="dark"], [data-accent="emerald"] {
-      --accent: #10b981;
-      --accent-hover: #059669;
-      --accent-subtle: rgba(16, 185, 129, 0.15);
-      --accent-text: #34d399;
-      --brand-grad: linear-gradient(135deg, #10b981, #06b6d4);
-      --chart-p1: #10b981;
-      --chart-p2: #06b6d4;
+      --accent: #00e5c3;
+      --accent-hover: #00c7a9;
+      --accent-subtle: rgba(0, 229, 195, 0.12);
+      --accent-text: #00e5c3;
+      --brand-grad: linear-gradient(135deg, #00e5c3, #7c5cfc);
+      --chart-p1: #00e5c3;
+      --chart-p2: #7c5cfc;
     }
     [data-accent="emerald"][data-theme="light"] {
       --accent: #059669;
@@ -197,22 +201,22 @@
     }
 
     /* ---- SCROLLBARS ---- */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
     ::-webkit-scrollbar-track { background: transparent; }
-    ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: var(--border-hover); }
+    ::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.08); border-radius: 4px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(255, 255, 255, 0.16); }
 
-    /* ---- HEADER ---- */
+    /* ---- HEADER (64PX FROSTED GLASS) ---- */
     header {
-      height: 56px;
-      padding: 0 20px;
+      height: 64px;
+      padding: 0 24px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border);
       background: var(--glass-bg);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
       position: sticky;
       top: 0;
       z-index: 50;
@@ -230,42 +234,39 @@
     }
 
     .brand-icon {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
       background: var(--brand-grad);
       display: flex;
       align-items: center;
       justify-content: center;
       color: #ffffff;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 0 16px rgba(0, 229, 195, 0.25);
       flex-shrink: 0;
     }
 
     .brand-text {
       font-weight: 700;
-      font-size: 17px;
-      letter-spacing: -0.4px;
+      font-size: 18px;
+      letter-spacing: -0.5px;
       display: flex;
       align-items: center;
-      gap: 6px;
+      gap: 7px;
     }
 
     .brand-badge {
       font-family: var(--font-mono);
-      font-size: 10px;
+      font-size: 11px;
       font-weight: 600;
-      padding: 2px 6px;
-      border-radius: 4px;
-      background: var(--accent-subtle);
       color: var(--accent-text);
-      letter-spacing: 0.2px;
+      letter-spacing: 0.3px;
     }
 
     .header-actions {
       display: flex;
       align-items: center;
-      gap: 8px;
+      gap: 10px;
     }
 
     .status-pill {
@@ -273,8 +274,8 @@
       align-items: center;
       gap: 6px;
       font-family: var(--font-mono);
-      font-size: 11px;
-      padding: 5px 10px;
+      font-size: 11.5px;
+      padding: 5px 12px;
       border-radius: 20px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -287,9 +288,9 @@
       border-radius: 50%;
       flex-shrink: 0;
     }
-    .status-dot.ready { background: var(--emerald); box-shadow: 0 0 6px var(--emerald); }
-    .status-dot.waking { background: var(--amber); box-shadow: 0 0 6px var(--amber); animation: pulse 1.4s infinite; }
-    .status-dot.error { background: var(--rose); box-shadow: 0 0 6px var(--rose); }
+    .status-dot.ready { background: var(--emerald); box-shadow: 0 0 8px var(--emerald); }
+    .status-dot.waking { background: var(--amber); box-shadow: 0 0 8px var(--amber); animation: pulse 1.4s infinite; }
+    .status-dot.error { background: var(--rose); box-shadow: 0 0 8px var(--rose); }
 
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
@@ -297,8 +298,8 @@
     }
 
     .icon-btn {
-      width: 34px;
-      height: 34px;
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--surface);
@@ -314,16 +315,17 @@
       background: var(--surface-hover);
       border-color: var(--border-hover);
       color: var(--text-primary);
+      transform: translateY(-1px);
     }
 
     .header-btn {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      height: 32px;
+      height: 34px;
       padding: 0 12px;
-      border-radius: 7px;
-      font-size: 12px;
+      border-radius: 8px;
+      font-size: 12.5px;
       font-weight: 500;
       border: 1px solid var(--border);
       background: var(--surface);
@@ -336,17 +338,21 @@
       background: var(--surface-hover);
       color: var(--text-primary);
       border-color: var(--border-hover);
+      transform: translateY(-1px);
     }
 
     .auth-btn-header {
-      background: var(--accent);
+      background: linear-gradient(135deg, rgba(0, 229, 195, 0.15), rgba(124, 92, 252, 0.2));
       color: #ffffff;
-      border: none;
+      border: 1px solid rgba(0, 229, 195, 0.4);
       font-weight: 600;
+      box-shadow: 0 0 16px rgba(0, 229, 195, 0.1);
     }
     .auth-btn-header:hover {
-      background: var(--accent-hover);
-      color: #ffffff;
+      background: linear-gradient(135deg, rgba(0, 229, 195, 0.25), rgba(124, 92, 252, 0.3));
+      border-color: var(--accent);
+      transform: translateY(-1px);
+      box-shadow: 0 0 20px rgba(0, 229, 195, 0.2);
     }
 
     /* User Profile Pill in Header */
@@ -356,15 +362,15 @@
     .user-pill {
       display: flex;
       align-items: center;
-      gap: 6px;
-      padding: 3px 8px 3px 3px;
+      gap: 8px;
+      padding: 4px 10px 4px 4px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
       cursor: pointer;
-      transition: border-color var(--transition);
+      transition: all var(--transition);
     }
-    .user-pill:hover { border-color: var(--accent); }
+    .user-pill:hover { border-color: var(--accent); transform: translateY(-1px); }
     .user-avatar-img {
       width: 26px;
       height: 26px;
@@ -384,9 +390,9 @@
       justify-content: center;
     }
     .user-email-text {
-      font-size: 11px;
+      font-size: 12px;
       font-weight: 500;
-      max-width: 90px;
+      max-width: 100px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -395,11 +401,11 @@
       position: absolute;
       right: 0;
       top: calc(100% + 8px);
-      width: 200px;
+      width: 210px;
       background: var(--surface-elevated);
       border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 10px;
+      border-radius: 12px;
+      padding: 12px;
       box-shadow: var(--shadow-lg);
       z-index: 70;
       display: flex;
@@ -409,36 +415,39 @@
     .dropdown-user-info {
       font-size: 12px;
       border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 6px;
+      padding-bottom: 8px;
     }
     .dropdown-user-name { font-weight: 700; color: var(--text-primary); }
-    .dropdown-user-email { font-size: 11px; color: var(--text-muted); word-break: break-all; }
+    .dropdown-user-email { font-size: 11px; color: var(--text-muted); word-break: break-all; margin-top: 2px; }
     .pro-badge {
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-size: 9px;
+      font-size: 9.5px;
       font-family: var(--font-mono);
       font-weight: 700;
       color: var(--accent-text);
       background: var(--accent-subtle);
-      padding: 2px 6px;
+      padding: 2px 7px;
       border-radius: 4px;
       width: fit-content;
-      margin-top: 4px;
+      margin-top: 6px;
     }
     .dropdown-signout-btn {
       width: 100%;
-      padding: 6px 10px;
-      border-radius: 6px;
+      padding: 7px 10px;
+      border-radius: 7px;
       background: var(--surface-hover);
       border: 1px solid var(--border);
       color: var(--text-secondary);
-      font-size: 11px;
+      font-size: 11.5px;
       font-weight: 600;
       cursor: pointer;
       text-align: left;
       transition: all var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 6px;
     }
     .dropdown-signout-btn:hover {
       background: var(--rose-subtle);
@@ -450,11 +459,11 @@
     .accent-bar {
       display: flex;
       align-items: center;
-      gap: 5px;
+      gap: 6px;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: 20px;
-      padding: 3px 6px;
+      padding: 4px 8px;
       flex-shrink: 0;
     }
     .swatch-btn {
@@ -466,13 +475,13 @@
       transition: transform var(--transition), box-shadow var(--transition);
       position: relative;
     }
-    .swatch-btn:hover { transform: scale(1.2); }
+    .swatch-btn:hover { transform: scale(1.25); }
     .swatch-btn.active {
       box-shadow: 0 0 0 2px var(--surface), 0 0 0 3.5px var(--accent);
       transform: scale(1.15);
     }
-    .swatch-emerald { background: #10b981; }
-    .swatch-iris { background: #5e6ad2; }
+    .swatch-emerald { background: #00e5c3; }
+    .swatch-iris { background: #7c5cfc; }
     .swatch-cyan { background: #06b6d4; }
     .swatch-amber { background: #f59e0b; }
     .swatch-cobalt { background: #3b82f6; }
@@ -481,7 +490,7 @@
     .app-workspace {
       flex: 1 1 0%;
       display: grid;
-      grid-template-columns: 300px 1fr;
+      grid-template-columns: 310px 1fr;
       overflow: hidden;
       min-height: 0;
       position: relative;
@@ -496,6 +505,12 @@
       overflow-y: auto;
       height: 100%;
       min-height: 0;
+      justify-content: space-between;
+    }
+
+    .sidebar-top {
+      display: flex;
+      flex-direction: column;
     }
 
     .sidebar-mobile-header {
@@ -512,18 +527,18 @@
     }
 
     .sidebar-section {
-      padding: 16px;
+      padding: 18px 16px;
       border-bottom: 1px solid var(--border-subtle);
     }
 
     .section-title {
       font-family: var(--font-mono);
-      font-size: 10px;
-      font-weight: 600;
+      font-size: 10.5px;
+      font-weight: 700;
       text-transform: uppercase;
-      letter-spacing: 1px;
+      letter-spacing: 0.8px;
       color: var(--text-muted);
-      margin-bottom: 10px;
+      margin-bottom: 12px;
       display: flex;
       align-items: center;
       justify-content: space-between;
@@ -531,9 +546,9 @@
 
     /* File Drop Card in Sidebar */
     .file-dropzone {
-      border: 1.5px dashed var(--border-hover);
+      border: 1.5px dashed rgba(0, 229, 195, 0.3);
       background: var(--surface);
-      border-radius: 10px;
+      border-radius: 12px;
       padding: 24px 16px;
       text-align: center;
       cursor: pointer;
@@ -543,15 +558,16 @@
     .file-dropzone:hover, .file-dropzone.drag-active {
       border-color: var(--accent);
       background: var(--accent-subtle);
+      transform: translateY(-1px);
     }
     .file-dropzone input {
       position: absolute; inset: 0; opacity: 0; cursor: pointer;
     }
     .dropzone-icon {
-      width: 36px;
-      height: 36px;
+      width: 40px;
+      height: 40px;
       margin: 0 auto 10px;
-      border-radius: 8px;
+      border-radius: 10px;
       background: var(--accent-subtle);
       color: var(--accent-text);
       display: flex;
@@ -560,7 +576,7 @@
     }
     .dropzone-title {
       font-weight: 600;
-      font-size: 13px;
+      font-size: 13.5px;
       margin-bottom: 4px;
     }
     .dropzone-meta {
@@ -570,32 +586,32 @@
 
     /* Loaded Dataset Card */
     .dataset-card {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 10px;
-      padding: 12px;
-      box-shadow: var(--shadow-sm);
+      background: linear-gradient(135deg, rgba(12, 20, 36, 0.9), rgba(16, 25, 46, 0.9));
+      border: 1px solid rgba(0, 229, 195, 0.2);
+      border-radius: 12px;
+      padding: 14px;
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
     }
     .dataset-header {
       display: flex;
       align-items: center;
-      gap: 8px;
-      margin-bottom: 8px;
+      gap: 10px;
+      margin-bottom: 10px;
     }
     .dataset-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 6px;
-      background: var(--accent-subtle);
-      color: var(--accent-text);
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: rgba(0, 229, 195, 0.15);
+      color: var(--accent);
       display: flex;
       align-items: center;
       justify-content: center;
       flex-shrink: 0;
     }
     .dataset-filename {
-      font-weight: 600;
-      font-size: 13px;
+      font-weight: 700;
+      font-size: 13.5px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -603,28 +619,28 @@
     }
     .dataset-stats {
       display: flex;
-      gap: 6px;
+      gap: 8px;
       flex-wrap: wrap;
-      margin-bottom: 10px;
+      margin-bottom: 12px;
     }
     .stat-badge {
       font-family: var(--font-mono);
-      font-size: 10px;
-      padding: 2px 7px;
-      border-radius: 4px;
+      font-size: 10.5px;
+      padding: 3px 8px;
+      border-radius: 6px;
       background: var(--surface-hover);
       border: 1px solid var(--border);
       color: var(--text-secondary);
     }
     .dataset-switch-btn {
-      font-size: 11px;
+      font-size: 11.5px;
       color: var(--accent-text);
       cursor: pointer;
       display: inline-flex;
       align-items: center;
       gap: 4px;
-      font-weight: 500;
-      transition: color var(--transition);
+      font-weight: 600;
+      transition: opacity var(--transition);
     }
     .dataset-switch-btn:hover {
       text-decoration: underline;
@@ -632,27 +648,28 @@
 
     /* Column Schema Explorer */
     .column-search {
-      margin-bottom: 8px;
+      margin-bottom: 10px;
       position: relative;
     }
     .column-search input {
       width: 100%;
-      height: 28px;
-      padding: 0 8px 0 26px;
-      border-radius: 6px;
+      height: 32px;
+      padding: 0 10px 0 28px;
+      border-radius: 8px;
       border: 1px solid var(--border);
       background: var(--surface);
       color: var(--text-primary);
-      font-size: 11px;
+      font-size: 12px;
       font-family: var(--font-sans);
       outline: none;
+      transition: border-color var(--transition);
     }
     .column-search input:focus {
       border-color: var(--accent);
     }
     .column-search-icon {
       position: absolute;
-      left: 8px;
+      left: 9px;
       top: 50%;
       transform: translateY(-50%);
       color: var(--text-muted);
@@ -662,45 +679,57 @@
     .column-list {
       display: flex;
       flex-direction: column;
-      gap: 4px;
-      max-height: 280px;
+      gap: 5px;
+      max-height: 240px;
       overflow-y: auto;
     }
     .column-row {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 6px 8px;
-      border-radius: 6px;
+      padding: 7px 10px;
+      border-radius: 8px;
       background: var(--surface);
       border: 1px solid var(--border-subtle);
-      font-size: 12px;
+      font-size: 12.5px;
       cursor: pointer;
       transition: all var(--transition);
     }
     .column-row:hover {
       background: var(--surface-hover);
       border-color: var(--border-hover);
+      transform: translateX(2px);
     }
-    .column-name {
-      font-weight: 500;
+    .column-name-box {
+      display: flex;
+      align-items: center;
+      gap: 6px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-right: 6px;
+    }
+    .column-type-icon {
+      font-size: 11px;
+      font-weight: 700;
+      font-family: var(--font-mono);
+      opacity: 0.8;
+      width: 14px;
+      text-align: center;
     }
     .col-type-tag {
       font-family: var(--font-mono);
-      font-size: 9px;
-      font-weight: 600;
-      padding: 1px 5px;
-      border-radius: 3px;
+      font-size: 9.5px;
+      font-weight: 700;
+      padding: 2px 6px;
+      border-radius: 4px;
       text-transform: uppercase;
       flex-shrink: 0;
+      letter-spacing: 0.3px;
     }
-    .tag-num { background: rgba(59, 130, 246, 0.15); color: #60a5fa; }
-    .tag-txt { background: rgba(148, 163, 184, 0.15); color: #cbd5e1; }
-    .tag-date { background: rgba(16, 185, 129, 0.15); color: #34d399; }
+    .tag-num { background: rgba(124, 92, 252, 0.15); color: #a78bfa; border: 1px solid rgba(124, 92, 252, 0.3); }
+    .tag-txt { background: rgba(0, 229, 195, 0.12); color: #00e5c3; border: 1px solid rgba(0, 229, 195, 0.25); }
+    .tag-date { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+    .tag-bool { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
 
     /* Suggested Questions */
     .prompts-list {
@@ -711,8 +740,8 @@
     .prompt-chip {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 7px;
-      padding: 8px 10px;
+      border-radius: 8px;
+      padding: 9px 12px;
       font-size: 12px;
       color: var(--text-secondary);
       text-align: left;
@@ -729,14 +758,56 @@
       color: var(--text-primary);
       transform: translateX(2px);
     }
-    .prompt-arrow {
-      color: var(--text-muted);
-      font-size: 11px;
-      transition: transform var(--transition);
-    }
-    .prompt-chip:hover .prompt-arrow {
+    .prompt-action-icon {
       color: var(--accent);
-      transform: translateX(2px);
+      font-size: 13px;
+      margin-right: 6px;
+    }
+
+    /* Sidebar Bottom Auth Card */
+    .sidebar-auth-card {
+      margin: 16px;
+      padding: 14px;
+      background: linear-gradient(135deg, rgba(0, 229, 195, 0.08), rgba(124, 92, 252, 0.12));
+      border: 1px solid rgba(0, 229, 195, 0.25);
+      border-radius: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+    .sidebar-auth-title {
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .sidebar-auth-desc {
+      font-size: 11px;
+      color: var(--text-secondary);
+      line-height: 1.4;
+    }
+    .sidebar-auth-btn {
+      width: 100%;
+      height: 32px;
+      border-radius: 8px;
+      background: #ffffff;
+      color: #0f172a;
+      border: none;
+      font-size: 11.5px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      transition: transform var(--transition), box-shadow var(--transition);
+      margin-top: 4px;
+    }
+    .sidebar-auth-btn:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
     }
 
     /* ---- MAIN CHAT / STUDIO AREA ---- */
@@ -747,7 +818,9 @@
       min-height: 0;
       overflow: hidden;
       position: relative;
-      background: var(--bg);
+      background: radial-gradient(circle at 80% 10%, rgba(0, 229, 195, 0.035), transparent 45%),
+                  radial-gradient(circle at 15% 90%, rgba(124, 92, 252, 0.03), transparent 40%),
+                  var(--bg);
     }
 
     .messages-stream {
@@ -766,7 +839,7 @@
     /* ---- EMPTY STATE ---- */
     .hero-container {
       margin: auto;
-      max-width: 580px;
+      max-width: 600px;
       width: 100%;
       padding: 40px 20px;
       text-align: center;
@@ -775,7 +848,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 4px 12px;
+      padding: 5px 14px;
       border-radius: 20px;
       background: var(--surface);
       border: 1px solid var(--border);
@@ -784,9 +857,9 @@
       margin-bottom: 16px;
     }
     .hero-title {
-      font-size: 32px;
+      font-size: 34px;
       font-weight: 800;
-      letter-spacing: -0.8px;
+      letter-spacing: -0.9px;
       line-height: 1.2;
       margin-bottom: 12px;
     }
@@ -796,17 +869,18 @@
       -webkit-text-fill-color: transparent;
     }
     .hero-desc {
-      font-size: 14px;
+      font-size: 14.5px;
       color: var(--text-secondary);
       margin-bottom: 28px;
-      max-width: 480px;
+      max-width: 500px;
       margin-left: auto;
       margin-right: auto;
+      line-height: 1.5;
     }
 
     .hero-upload-card {
-      border: 1.5px dashed var(--border-hover);
-      border-radius: 12px;
+      border: 1.5px dashed rgba(0, 229, 195, 0.35);
+      border-radius: 14px;
       background: var(--surface);
       padding: 36px 20px;
       cursor: pointer;
@@ -817,13 +891,15 @@
     .hero-upload-card:hover, .hero-upload-card.drag-active {
       border-color: var(--accent);
       background: var(--accent-subtle);
+      transform: translateY(-2px);
+      box-shadow: 0 8px 24px rgba(0, 229, 195, 0.08);
     }
     .hero-upload-card input {
       position: absolute; inset: 0; opacity: 0; cursor: pointer;
     }
     .hero-upload-icon {
-      width: 48px;
-      height: 48px;
+      width: 50px;
+      height: 50px;
       border-radius: 12px;
       background: var(--accent-subtle);
       color: var(--accent-text);
@@ -847,9 +923,9 @@
     }
 
     .msg-avatar {
-      width: 30px;
-      height: 30px;
-      border-radius: 8px;
+      width: 32px;
+      height: 32px;
+      border-radius: 9px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -859,6 +935,7 @@
     .msg-avatar.ai {
       background: var(--brand-grad);
       color: #ffffff;
+      box-shadow: 0 0 12px rgba(0, 229, 195, 0.2);
     }
     .msg-avatar.user {
       background: var(--surface-hover);
@@ -867,24 +944,38 @@
     }
 
     .msg-bubble-user {
-      background: var(--accent);
-      color: #ffffff;
+      background: linear-gradient(135deg, rgba(0, 229, 195, 0.12), rgba(124, 92, 252, 0.15));
+      border: 1px solid rgba(0, 229, 195, 0.3);
+      color: #f5f7fa;
       padding: 10px 16px;
-      border-radius: 12px 12px 2px 12px;
+      border-radius: 14px 14px 3px 14px;
       font-size: 13.5px;
       font-weight: 500;
       max-width: 600px;
-      box-shadow: var(--shadow-sm);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+    .msg-user-meta {
+      font-size: 10px;
+      font-family: var(--font-mono);
+      color: rgba(255, 255, 255, 0.5);
+      text-align: right;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 4px;
     }
 
     .msg-card-ai {
       background: var(--surface);
       border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 16px;
+      border-radius: 14px;
+      padding: 18px;
       flex: 1;
       min-width: 0;
-      box-shadow: var(--shadow-sm);
+      box-shadow: var(--shadow-md);
       display: flex;
       flex-direction: column;
       gap: 12px;
@@ -895,18 +986,19 @@
       align-items: center;
       justify-content: space-between;
       border-bottom: 1px solid var(--border-subtle);
-      padding-bottom: 8px;
-      margin-bottom: 4px;
+      padding-bottom: 10px;
+      margin-bottom: 2px;
       gap: 8px;
     }
     .ai-label {
       font-size: 11px;
       font-family: var(--font-mono);
-      font-weight: 600;
-      color: var(--text-muted);
+      font-weight: 700;
+      color: var(--accent-text);
       display: flex;
       align-items: center;
       gap: 6px;
+      letter-spacing: 0.5px;
     }
     .ai-actions {
       display: flex;
@@ -919,8 +1011,8 @@
       gap: 4px;
       font-size: 11px;
       font-family: var(--font-mono);
-      padding: 3px 8px;
-      border-radius: 5px;
+      padding: 4px 8px;
+      border-radius: 6px;
       background: var(--surface-hover);
       border: 1px solid var(--border);
       color: var(--text-secondary);
@@ -931,6 +1023,7 @@
       background: var(--surface-active);
       color: var(--text-primary);
       border-color: var(--border-hover);
+      transform: translateY(-1px);
     }
 
     .ai-explanation {
@@ -942,7 +1035,7 @@
     /* ---- TABBED RESULTS STUDIO ---- */
     .studio-card {
       border: 1px solid var(--border);
-      border-radius: 10px;
+      border-radius: 12px;
       background: var(--bg-subtle);
       overflow: hidden;
       margin-top: 6px;
@@ -960,7 +1053,7 @@
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      padding: 6px 12px;
+      padding: 7px 14px;
       font-size: 12px;
       font-weight: 600;
       color: var(--text-muted);
@@ -998,7 +1091,7 @@
       overflow: auto;
       -webkit-overflow-scrolling: touch;
       border: 1px solid var(--border);
-      border-radius: 6px;
+      border-radius: 8px;
     }
     table {
       width: 100%;
@@ -1009,7 +1102,7 @@
     }
     th {
       background: var(--surface);
-      padding: 8px 12px;
+      padding: 9px 12px;
       color: var(--text-muted);
       font-weight: 600;
       border-bottom: 1px solid var(--border);
@@ -1019,7 +1112,7 @@
       white-space: nowrap;
     }
     td {
-      padding: 7px 12px;
+      padding: 8px 12px;
       border-bottom: 1px solid var(--border-subtle);
       color: var(--text-secondary);
       white-space: nowrap;
@@ -1034,10 +1127,10 @@
 
     /* Code Viewer */
     .code-viewer {
-      background: var(--bg);
+      background: #04060d;
       border: 1px solid var(--border);
-      border-radius: 6px;
-      padding: 12px;
+      border-radius: 8px;
+      padding: 14px;
       font-family: var(--font-mono);
       font-size: 12px;
       color: var(--accent-text);
@@ -1049,14 +1142,14 @@
     .typing-box {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 5px;
       padding: 6px 0;
     }
     .typing-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: var(--text-muted);
+      background: var(--accent);
       animation: typing-dot 1.2s infinite ease-in-out;
     }
     .typing-dot:nth-child(1) { animation-delay: 0s; }
@@ -1068,10 +1161,10 @@
       40% { transform: scale(1); opacity: 1; }
     }
 
-    /* ---- FLOATING INPUT DOCK ---- */
+    /* ---- FLOATING INPUT DOCK (HERO COMPONENT) ---- */
     .input-dock {
-      padding: 14px 20px;
-      background: linear-gradient(to top, var(--bg) 80%, transparent);
+      padding: 16px 24px max(18px, env(safe-area-inset-bottom, 18px));
+      background: linear-gradient(to top, var(--bg) 85%, transparent);
       position: relative;
       z-index: 30;
       flex-shrink: 0;
@@ -1080,18 +1173,18 @@
       max-width: 860px;
       margin: 0 auto;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 12px;
-      padding: 8px 12px 8px 14px;
+      border: 1px solid rgba(0, 229, 195, 0.25);
+      border-radius: 14px;
+      padding: 8px 10px 8px 14px;
       display: flex;
       align-items: center;
       gap: 8px;
-      box-shadow: var(--shadow-md);
-      transition: border-color var(--transition), box-shadow var(--transition);
+      box-shadow: 0 4px 24px rgba(0, 0, 0, 0.4);
+      transition: all var(--transition);
     }
     .input-box:focus-within {
       border-color: var(--accent);
-      box-shadow: 0 0 0 2px var(--accent-subtle);
+      box-shadow: 0 0 0 1px var(--accent), 0 0 28px rgba(0, 229, 195, 0.12);
     }
     .input-box textarea {
       flex: 1;
@@ -1110,27 +1203,50 @@
     .input-box textarea::placeholder {
       color: var(--text-muted);
     }
+    .input-tool-btn {
+      width: 28px;
+      height: 28px;
+      border-radius: 6px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-size: 12px;
+    }
+    .input-tool-btn:hover {
+      background: var(--surface-hover);
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+    }
     .send-btn {
-      width: 32px;
-      height: 32px;
-      border-radius: 8px;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
       background: var(--accent);
       border: none;
-      color: #ffffff;
+      color: #04060d;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
       flex-shrink: 0;
       transition: all var(--transition);
+      box-shadow: 0 0 12px rgba(0, 229, 195, 0.3);
     }
     .send-btn:disabled {
       background: var(--surface-hover);
       color: var(--text-muted);
       cursor: not-allowed;
+      box-shadow: none;
     }
     .send-btn:not(:disabled):hover {
-      background: var(--accent-hover);
+      background: #ffffff;
+      transform: scale(1.05);
+      box-shadow: 0 0 18px rgba(0, 229, 195, 0.5);
     }
 
     .input-shortcuts {
@@ -1138,7 +1254,7 @@
       font-size: 11px;
       font-family: var(--font-mono);
       color: var(--text-muted);
-      margin-top: 6px;
+      margin-top: 8px;
     }
 
     /* ---- MODALS ---- */
@@ -2803,7 +2919,7 @@ function App() {
           <div className="brand-icon"><Icons.Logo /></div>
           <div className="brand-text">
             Queryza
-            <span className="brand-badge">STUDIO</span>
+            <span className="brand-badge">Studio</span>
           </div>
         </div>
 
@@ -2915,158 +3031,189 @@ function App() {
       <div className="app-workspace">
         {/* Sidebar */}
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
-          <div className="sidebar-mobile-header">
-            <h4>Dataset Inspector</h4>
-            <button className="icon-btn" style={{width: '28px', height: '28px'}} onClick={() => setSidebarOpen(false)}>✕</button>
-          </div>
+          <div className="sidebar-top">
+            <div className="sidebar-mobile-header">
+              <h4>Dataset Inspector</h4>
+              <button className="icon-btn" style={{width: '28px', height: '28px'}} onClick={() => setSidebarOpen(false)}>✕</button>
+            </div>
 
-          <div className="sidebar-section">
-            <div className="section-title">Dataset Source</div>
-            {!session ? (
-              <div 
-                className={`file-dropzone ${dragOver ? 'drag-active' : ''}`}
-                onDragOver={e => { e.preventDefault(); setDragOver(true); }}
-                onDragLeave={() => setDragOver(false)}
-                onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
-              >
-                <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
-                <div className="dropzone-icon"><Icons.Upload /></div>
-                <div className="dropzone-title">{uploading ? 'Processing dataset...' : 'Upload Data'}</div>
-                <div className="dropzone-meta">CSV, XLSX, XLS · Max 25 MB</div>
+            <div className="sidebar-section">
+              <div className="section-title">DATASET</div>
+              {!session ? (
+                <div 
+                  className={`file-dropzone ${dragOver ? 'drag-active' : ''}`}
+                  onDragOver={e => { e.preventDefault(); setDragOver(true); }}
+                  onDragLeave={() => setDragOver(false)}
+                  onDrop={e => { e.preventDefault(); setDragOver(false); handleFile(e.dataTransfer.files[0]); }}
+                >
+                  <input type="file" accept=".csv,.xlsx,.xls" onChange={e => handleFile(e.target.files[0])} />
+                  <div className="dropzone-icon"><Icons.Upload /></div>
+                  <div className="dropzone-title">{uploading ? 'Processing dataset...' : 'Upload Data'}</div>
+                  <div className="dropzone-meta">CSV, XLSX, XLS · Max 25 MB</div>
+                </div>
+              ) : (
+                <div className="dataset-card">
+                  <div className="dataset-header">
+                    <div className="dataset-icon"><Icons.Sheet /></div>
+                    <div className="dataset-filename" title={session.filename}>{session.filename}</div>
+                  </div>
+                  <div className="dataset-stats">
+                    <span className="stat-badge">{session.rows.toLocaleString()} rows</span>
+                    <span className="stat-badge">{session.columns} columns</span>
+                  </div>
+                  <div className="dataset-switch-btn" onClick={handleResetDataset}>
+                    + Upload another file
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {session && (
+              <div className="sidebar-section">
+                <div className="section-title">
+                  <span>SCHEMA · {filteredColumns.length}</span>
+                </div>
+                <div className="column-search">
+                  <span className="column-search-icon"><Icons.Search /></span>
+                  <input 
+                    type="text" 
+                    placeholder="Search columns..." 
+                    value={columnFilter}
+                    onChange={e => setColumnFilter(e.target.value)}
+                  />
+                </div>
+                <div className="column-list">
+                  {filteredColumns.map(col => {
+                    const previewVals = session.preview ? session.preview.map(r => r[col]).filter(v => v !== null && v !== undefined && v !== '') : [];
+                    const isNumeric = previewVals.length > 0 && previewVals.every(v => !isNaN(Number(v)));
+                    let stats = null;
+                    if (isNumeric && previewVals.length > 0) {
+                      const numVals = previewVals.map(Number);
+                      const min = Math.min(...numVals);
+                      const max = Math.max(...numVals);
+                      const avg = (numVals.reduce((a, b) => a + b, 0) / numVals.length).toFixed(2);
+                      stats = { min, max, avg, type: 'NUMBER' };
+                    } else {
+                      const uniqueCount = new Set(previewVals).size;
+                      stats = { unique: uniqueCount, type: 'TEXT' };
+                    }
+
+                    return (
+                      <div className="col-row-wrapper" key={col}>
+                        <div 
+                          className="column-row" 
+                          style={{flex: 1}}
+                          onClick={() => appendColumnToInput(col)}
+                          title="Click to insert column name"
+                        >
+                          <div className="column-name-box">
+                            <span className="column-type-icon" style={{color: isNumeric ? '#a78bfa' : '#00e5c3'}}>
+                              {isNumeric ? '#' : 'T'}
+                            </span>
+                            <span className="column-name">{col}</span>
+                          </div>
+                          <span className={`col-type-tag ${isNumeric ? 'tag-num' : 'tag-txt'}`}>
+                            {isNumeric ? 'NUMBER' : 'TEXT'}
+                          </span>
+                        </div>
+                        <button 
+                          className="col-info-btn"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setActiveColPopover(activeColPopover === col ? null : col);
+                          }}
+                          title="Inspect column stats"
+                        >
+                          ⓘ
+                        </button>
+                        {activeColPopover === col && stats && (
+                          <div className="col-popover" onClick={e => e.stopPropagation()}>
+                            <div className="col-popover-title">
+                              <span>{col}</span>
+                              <span style={{cursor: 'pointer', opacity: 0.6}} onClick={() => setActiveColPopover(null)}>✕</span>
+                            </div>
+                            <div className="col-stat-row">
+                              <span>Data Type:</span>
+                              <span className="col-stat-val">{stats.type}</span>
+                            </div>
+                            <div className="col-stat-row">
+                              <span>Sampled:</span>
+                              <span className="col-stat-val">{previewVals.length} non-null</span>
+                            </div>
+                            {isNumeric ? (
+                              <>
+                                <div className="col-stat-row">
+                                  <span>Min:</span>
+                                  <span className="col-stat-val">{stats.min}</span>
+                                </div>
+                                <div className="col-stat-row">
+                                  <span>Max:</span>
+                                  <span className="col-stat-val">{stats.max}</span>
+                                </div>
+                                <div className="col-stat-row">
+                                  <span>Mean (Avg):</span>
+                                  <span className="col-stat-val">{stats.avg}</span>
+                                </div>
+                              </>
+                            ) : (
+                              <div className="col-stat-row">
+                                <span>Unique Values:</span>
+                                <span className="col-stat-val">{stats.unique} unique</span>
+                              </div>
+                            )}
+                            <button 
+                              className="header-btn" 
+                              style={{marginTop: '4px', padding: '4px 8px', fontSize: '11px', justifyContent: 'center', background: 'var(--accent)', color: '#04060d', border: 'none', borderRadius: '6px', fontWeight: 700}}
+                              onClick={() => {
+                                setActiveColPopover(null);
+                                sendMessage(`Show me a summary and distribution for '${col}'`);
+                              }}
+                            >
+                              ⚡ Analyze '{col}'
+                            </button>
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
               </div>
-            ) : (
-              <div className="dataset-card">
-                <div className="dataset-header">
-                  <div className="dataset-icon"><Icons.Sheet /></div>
-                  <div className="dataset-filename" title={session.filename}>{session.filename}</div>
-                </div>
-                <div className="dataset-stats">
-                  <span className="stat-badge">{session.rows.toLocaleString()} rows</span>
-                  <span className="stat-badge">{session.columns} columns</span>
-                </div>
-                <div className="dataset-switch-btn" onClick={handleResetDataset}>
-                  ← Upload another file
+            )}
+
+            {session && session.suggestions && session.suggestions.length > 0 && (
+              <div className="sidebar-section">
+                <div className="section-title">SUGGESTED QUESTIONS</div>
+                <div className="prompts-list">
+                  {session.suggestions.map((s, i) => {
+                    const icons = ['✦', '⌁', '◫', '↗', '▥', '📈'];
+                    const icon = icons[i % icons.length];
+                    return (
+                      <button className="prompt-chip" key={i} onClick={() => sendMessage(s)}>
+                        <span style={{display: 'flex', alignItems: 'center'}}>
+                          <span className="prompt-action-icon">{icon}</span>
+                          <span>{s}</span>
+                        </span>
+                        <span style={{color: 'var(--text-muted)', fontSize: '11px'}}>→</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
           </div>
 
-          {session && (
-            <div className="sidebar-section">
-              <div className="section-title">
-                <span>Schema ({filteredColumns.length})</span>
+          {/* Sidebar Bottom Guest Auth Banner */}
+          {!user && (
+            <div className="sidebar-auth-card">
+              <div className="sidebar-auth-title">
+                <span style={{color: 'var(--accent)'}}><Icons.Sparkles /></span> Unlock Unlimited Access
               </div>
-              <div className="column-search">
-                <span className="column-search-icon"><Icons.Search /></span>
-                <input 
-                  type="text" 
-                  placeholder="Filter columns..." 
-                  value={columnFilter}
-                  onChange={e => setColumnFilter(e.target.value)}
-                />
+              <div className="sidebar-auth-desc">
+                Sign in with Google to ask unlimited questions, inspect Python code, and export reports.
               </div>
-              <div className="column-list">
-                {filteredColumns.map(col => {
-                  const previewVals = session.preview ? session.preview.map(r => r[col]).filter(v => v !== null && v !== undefined && v !== '') : [];
-                  const isNumeric = previewVals.length > 0 && previewVals.every(v => !isNaN(Number(v)));
-                  let stats = null;
-                  if (isNumeric && previewVals.length > 0) {
-                    const numVals = previewVals.map(Number);
-                    const min = Math.min(...numVals);
-                    const max = Math.max(...numVals);
-                    const avg = (numVals.reduce((a, b) => a + b, 0) / numVals.length).toFixed(2);
-                    stats = { min, max, avg, type: 'Numeric' };
-                  } else {
-                    const uniqueCount = new Set(previewVals).size;
-                    stats = { unique: uniqueCount, type: 'Categorical' };
-                  }
-
-                  return (
-                    <div className="col-row-wrapper" key={col}>
-                      <div 
-                        className="column-row" 
-                        style={{flex: 1}}
-                        onClick={() => appendColumnToInput(col)}
-                        title="Click to insert column name"
-                      >
-                        <span className="column-name">{col}</span>
-                        <span className="col-type-tag tag-txt">{isNumeric ? 'NUM' : 'TXT'}</span>
-                      </div>
-                      <button 
-                        className="col-info-btn"
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setActiveColPopover(activeColPopover === col ? null : col);
-                        }}
-                        title="Inspect column stats"
-                      >
-                        ⓘ
-                      </button>
-                      {activeColPopover === col && stats && (
-                        <div className="col-popover" onClick={e => e.stopPropagation()}>
-                          <div className="col-popover-title">
-                            <span>{col}</span>
-                            <span style={{cursor: 'pointer', opacity: 0.6}} onClick={() => setActiveColPopover(null)}>✕</span>
-                          </div>
-                          <div className="col-stat-row">
-                            <span>Type:</span>
-                            <span className="col-stat-val">{stats.type}</span>
-                          </div>
-                          <div className="col-stat-row">
-                            <span>Sampled:</span>
-                            <span className="col-stat-val">{previewVals.length} non-null</span>
-                          </div>
-                          {isNumeric ? (
-                            <>
-                              <div className="col-stat-row">
-                                <span>Min:</span>
-                                <span className="col-stat-val">{stats.min}</span>
-                              </div>
-                              <div className="col-stat-row">
-                                <span>Max:</span>
-                                <span className="col-stat-val">{stats.max}</span>
-                              </div>
-                              <div className="col-stat-row">
-                                <span>Mean (Avg):</span>
-                                <span className="col-stat-val">{stats.avg}</span>
-                              </div>
-                            </>
-                          ) : (
-                            <div className="col-stat-row">
-                              <span>Unique Values:</span>
-                              <span className="col-stat-val">{stats.unique} unique</span>
-                            </div>
-                          )}
-                          <button 
-                            className="header-btn" 
-                            style={{marginTop: '4px', padding: '4px 8px', fontSize: '11px', justifyContent: 'center', background: 'var(--accent)', color: '#fff', border: 'none', borderRadius: '5px'}}
-                            onClick={() => {
-                              setActiveColPopover(null);
-                              sendMessage(`Show me a summary and distribution for '${col}'`);
-                            }}
-                          >
-                            ⚡ Analyze '{col}'
-                          </button>
-                        </div>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {session && session.suggestions && session.suggestions.length > 0 && (
-            <div className="sidebar-section">
-              <div className="section-title">Suggested Inquiries</div>
-              <div className="prompts-list">
-                {session.suggestions.map((s, i) => (
-                  <button className="prompt-chip" key={i} onClick={() => sendMessage(s)}>
-                    <span>{s}</span>
-                    <span className="prompt-arrow">→</span>
-                  </button>
-                ))}
-              </div>
+              <button className="sidebar-auth-btn" onClick={() => setAuthModalOpen(true)}>
+                <Icons.Google /> Sign in with Google
+              </button>
             </div>
           )}
         </aside>
@@ -3131,7 +3278,22 @@ function App() {
                       <div className="msg-avatar ai"><Icons.Logo /></div>
                     )}
                     {msg.role === 'user' ? (
-                      <div className="msg-bubble-user">{msg.content}</div>
+                      <div style={{display: 'flex', alignItems: 'flex-end', gap: '8px', justifyContent: 'flex-end', width: '100%'}}>
+                        <div className="msg-bubble-user">
+                          <div>{msg.content}</div>
+                          <div className="msg-user-meta">
+                            <span>{msg.timestamp || 'Just now'}</span>
+                            <span style={{color: 'var(--accent)'}}>✓✓</span>
+                          </div>
+                        </div>
+                        <div className="msg-avatar user">
+                          {user?.avatar ? (
+                            <img src={user.avatar} style={{width: '100%', height: '100%', borderRadius: '50%'}} alt="u" />
+                          ) : (
+                            <span>{user?.name?.charAt(0) || 'U'}</span>
+                          )}
+                        </div>
+                      </div>
                     ) : (
                       <StudioResultCard msg={msg} theme={theme} accent={accent} onReupload={handleFile} />
                     )}
@@ -3141,7 +3303,10 @@ function App() {
                 {loading && (
                   <div className="msg-row ai">
                     <div className="msg-avatar ai"><Icons.Logo /></div>
-                    <div className="msg-card-ai" style={{padding: '12px 16px', maxWidth: '180px'}}>
+                    <div className="msg-card-ai" style={{padding: '14px 18px', maxWidth: '240px'}}>
+                      <div style={{fontSize: '12px', fontWeight: 600, color: 'var(--accent-text)', marginBottom: '4px', display: 'flex', alignItems: 'center', gap: '6px'}}>
+                        <Icons.Sparkles /> Analyzing your dataset...
+                      </div>
                       <div className="typing-box">
                         <div className="typing-dot" />
                         <div className="typing-dot" />
@@ -3162,10 +3327,14 @@ function App() {
                   </div>
                 )}
                 <div className="input-box">
+                  <label className="input-tool-btn" title="Upload or switch spreadsheet">
+                    <Icons.Upload />
+                    <input type="file" accept=".csv,.xlsx,.xls" style={{display: 'none'}} onChange={e => handleFile(e.target.files[0])} />
+                  </label>
                   <textarea
                     ref={textareaRef}
                     rows={1}
-                    placeholder="Ask a question or request a visualization..."
+                    placeholder="Ask Queryza anything about your data..."
                     value={input}
                     onChange={onInputChange}
                     onKeyDown={onKeyDown}
