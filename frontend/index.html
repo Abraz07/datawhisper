@@ -1904,6 +1904,8 @@ function App() {
           provider: 'google'
         };
         setUser(profile);
+        setAuthModalOpen(false);
+        try { localStorage.setItem('queryza_user_v1', JSON.stringify(profile)); } catch (e) {}
       }
     });
     return () => unsubscribe();
@@ -2160,7 +2162,7 @@ function App() {
   return (
     <>
       {/* Auth / Sign In Modal */}
-      {authModalOpen && (
+      {authModalOpen && !user && (
         <div className="modal-backdrop" onClick={() => setAuthModalOpen(false)}>
           <div className="modal-window auth-modal-card" onClick={e => e.stopPropagation()}>
             <div className="modal-head" style={{borderBottom: 'none', paddingBottom: '0'}}>
