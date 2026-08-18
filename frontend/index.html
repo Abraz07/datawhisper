@@ -11,6 +11,7 @@
   <!-- Firebase SDK -->
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore-compat.js"></script>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -1473,6 +1474,7 @@ const firebaseConfig = {
 
 let auth = null;
 let googleProvider = null;
+let db = null;
 try {
   if (typeof firebase !== 'undefined') {
     if (!firebase.apps.length) {
@@ -1480,6 +1482,7 @@ try {
     }
     auth = firebase.auth();
     googleProvider = new firebase.auth.GoogleAuthProvider();
+    db = firebase.firestore();
   }
 } catch (err) {
   console.warn("Firebase initialization notice:", err);
@@ -1692,9 +1695,22 @@ function StudioResultCard({ msg, theme, accent, onReupload }) {
 
   const handleFeedback = (type) => {
     setFeedback(type);
+    const feedbackItem = {
+      reaction: type,
+      time: new Date().toISOString(),
+      snippet: msg.content?.slice(0, 100) || ''
+    };
+    try {
+      if (db) {
+        db.collection("card_reactions").add({
+          ...feedbackItem,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    } catch (err) {}
     try {
       const stored = JSON.parse(localStorage.getItem('queryza_card_feedback_v1') || '[]');
-      stored.push({ type, time: new Date().toISOString(), snippet: msg.content?.slice(0, 80) });
+      stored.push(feedbackItem);
       localStorage.setItem('queryza_card_feedback_v1', JSON.stringify(stored));
     } catch (e) {}
   };
@@ -1838,19 +1854,32 @@ function App() {
   const [pendingUploadFile, setPendingUploadFile] = useState(null);
   const [pendingQuery, setPendingQuery] = useState(null);
 
-  const submitGlobalFeedback = (e) => {
+  const submitGlobalFeedback = async (e) => {
     e.preventDefault();
+    const feedbackPayload = {
+      stars: feedbackStars,
+      category: feedbackCategory,
+      comment: feedbackComment || '',
+      userEmail: user?.email || 'Guest',
+      userName: user?.name || 'Guest',
+      timestamp: new Date().toISOString()
+    };
+    try {
+      if (db) {
+        await db.collection("feedbacks").add({
+          ...feedbackPayload,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp()
+        });
+      }
+    } catch (err) {
+      console.warn("Firestore save:", err);
+    }
     try {
       const stored = JSON.parse(localStorage.getItem('queryza_user_feedbacks_v1') || '[]');
-      stored.push({
-        stars: feedbackStars,
-        category: feedbackCategory,
-        comment: feedbackComment,
-        user: user?.email || 'Guest',
-        timestamp: new Date().toISOString()
-      });
+      stored.push(feedbackPayload);
       localStorage.setItem('queryza_user_feedbacks_v1', JSON.stringify(stored));
     } catch (err) {}
+
     setFeedbackSent(true);
     setTimeout(() => {
       setFeedbackSent(false);
