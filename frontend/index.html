@@ -1777,10 +1777,16 @@ function App() {
     } catch { return 0; }
   });
 
+  const [guestQueriesCount, setGuestQueriesCount] = useState(() => {
+    try {
+      return Number(localStorage.getItem('queryza_guest_queries_v1') || 0);
+    } catch { return 0; }
+  });
+
   const [authModalOpen, setAuthModalOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [pendingUploadFile, setPendingUploadFile] = useState(null);
-  const [emailInput, setEmailInput] = useState('');
+  const [pendingQuery, setPendingQuery] = useState(null);
 
   const [session, setSession] = useState(() => {
     try {
@@ -1926,6 +1932,10 @@ function App() {
         const fileToUpload = pendingUploadFile;
         setPendingUploadFile(null);
         executeFileUpload(fileToUpload);
+      } else if (pendingQuery) {
+        const queryToRun = pendingQuery;
+        setPendingQuery(null);
+        sendMessage(queryToRun);
       }
     } catch (err) {
       if (err.code === 'auth/popup-closed-by-user') return;
@@ -1934,31 +1944,6 @@ function App() {
         return;
       }
       alert("Google Sign-In: " + err.message);
-    }
-  };
-
-  const handleEmailSignIn = (e) => {
-    e.preventDefault();
-    if (!emailInput.trim() || !emailInput.includes('@')) {
-      alert("Please enter a valid email address.");
-      return;
-    }
-    const namePart = emailInput.split('@')[0];
-    const formattedName = namePart.charAt(0).toUpperCase() + namePart.slice(1);
-    const mockUser = {
-      name: formattedName,
-      email: emailInput.trim(),
-      avatar: null,
-      provider: "email",
-      unlockedAt: new Date().toISOString()
-    };
-    setUser(mockUser);
-    setAuthModalOpen(false);
-
-    if (pendingUploadFile) {
-      const fileToUpload = pendingUploadFile;
-      setPendingUploadFile(null);
-      executeFileUpload(fileToUpload);
     }
   };
 
@@ -2041,6 +2026,20 @@ function App() {
   const sendMessage = async (text) => {
     const q = (text || input).trim();
     if (!q || !session || loading) return;
+
+    // 5-Question Free Guest Limit Check
+    if (!user && guestQueriesCount >= 5) {
+      setPendingQuery(q);
+      setAuthModalOpen(true);
+      return;
+    }
+
+    if (!user) {
+      const newCount = guestQueriesCount + 1;
+      setGuestQueriesCount(newCount);
+      localStorage.setItem('queryza_guest_queries_v1', String(newCount));
+    }
+
     setInput('');
     setSidebarOpen(false);
     setMessages(prev => [...prev, { role: 'user', content: q }]);
@@ -2135,9 +2134,11 @@ function App() {
                 Unlock Unlimited Analysis
               </h2>
               <p style={{fontSize: '13px', color: 'var(--text-secondary)', lineHeight: 1.5}}>
-                {uploadsCount >= 1 
-                  ? "You've completed your free guest trial dataset! Sign in with Google to unlock unlimited datasets and export tools." 
-                  : "Sign in to Queryza Studio with your Google account to unlock full analytical features."}
+                {!user && guestQueriesCount >= 5 
+                  ? "You've used all 5 free guest questions! Sign in with Google to continue asking unlimited questions, generating charts, and inspecting data." 
+                  : uploadsCount >= 1 
+                  ? "You've completed your free guest trial dataset! Sign in with Google to unlock unlimited workbook uploads and export tools." 
+                  : "Sign in to Queryza Studio with your Google account to unlock full unlimited analytical features."}
               </p>
 
               <div className="auth-benefits">
@@ -2458,6 +2459,13 @@ function App() {
 
               {/* Floating Input Dock */}
               <div className="input-dock">
+                {!user && (
+                  <div style={{display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '6px', fontSize: '11px', color: 'var(--text-muted)', marginBottom: '8px', flexWrap: 'wrap'}}>
+                    <span>⚡ Guest Trial: <strong style={{color: 'var(--text-primary)'}}>{Math.max(0, 5 - guestQueriesCount)} of 5</strong> free questions remaining</span>
+                    <span>·</span>
+                    <span style={{color: 'var(--accent-text)', cursor: 'pointer', fontWeight: 600, textDecoration: 'underline'}} onClick={() => setAuthModalOpen(true)}>Sign in with Google for unlimited</span>
+                  </div>
+                )}
                 <div className="input-box">
                   <textarea
                     ref={textareaRef}
