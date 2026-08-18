@@ -2196,6 +2196,12 @@ function StudioResultCard({ msg, theme, accent, onReupload }) {
           </label>
         </div>
       )}
+
+      <div style={{display: 'flex', justifyContent: 'flex-end', marginTop: '4px'}}>
+        <span style={{fontSize: '11px', fontFamily: 'var(--font-mono)', color: 'var(--text-muted)'}}>
+          {msg.timestamp || new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}
+        </span>
+      </div>
     </div>
   );
 }
@@ -2633,9 +2639,10 @@ function App() {
       localStorage.setItem('queryza_guest_queries_v1', String(newCount));
     }
 
+    const currentTime = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
     setInput('');
     setSidebarOpen(false);
-    setMessages(prev => [...prev, { role: 'user', content: q }]);
+    setMessages(prev => [...prev, { role: 'user', content: q, timestamp: currentTime }]);
     setLoading(true);
     try {
       let currentSessionId = session.session_id;
@@ -2671,18 +2678,20 @@ function App() {
         }
       }
 
+      const replyTime = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
       const data = await res.json();
       if (!res.ok) {
         if (res.status === 404) {
           setMessages(prev => [...prev, {
             role: 'ai',
             content: 'Your dataset session has expired on the server. Please re-upload your spreadsheet below to resume analysis.',
-            sessionExpired: true
+            sessionExpired: true,
+            timestamp: replyTime
           }]);
           return;
         }
         const msg = typeof data.detail === 'string' ? data.detail : 'Something went wrong. Please try again.';
-        setMessages(prev => [...prev, { role: 'ai', content: msg, error: msg }]);
+        setMessages(prev => [...prev, { role: 'ai', content: msg, error: msg, timestamp: replyTime }]);
         return;
       }
       setMessages(prev => [...prev, {
@@ -2692,9 +2701,11 @@ function App() {
         chart: data.chart,
         table: data.table,
         error: data.error,
+        timestamp: replyTime
       }]);
     } catch (e) {
-      setMessages(prev => [...prev, { role: 'ai', content: 'Connection failed. Please verify backend is running.', error: 'Failed to fetch' }]);
+      const errTime = new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' });
+      setMessages(prev => [...prev, { role: 'ai', content: 'Connection failed. Please verify backend is running.', error: 'Failed to fetch', timestamp: errTime }]);
     } finally { setLoading(false); }
   };
 
@@ -3233,7 +3244,7 @@ function App() {
                         <div className="msg-bubble-user">
                           <div>{msg.content}</div>
                           <div className="msg-user-meta">
-                            <span>{msg.timestamp || 'Just now'}</span>
+                            <span>{msg.timestamp || new Date().toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}</span>
                             <span style={{color: 'var(--accent)'}}>✓✓</span>
                           </div>
                         </div>
