@@ -518,6 +518,7 @@
       box-shadow: 4px 0 24px rgba(0, 0, 0, 0.25);
       display: flex;
       flex-direction: column;
+      justify-content: space-between;
       overflow-y: auto;
       overflow-x: hidden;
       height: 100%;
@@ -536,7 +537,6 @@
     .sidebar-top {
       display: flex;
       flex-direction: column;
-      flex-shrink: 0;
     }
 
     .sidebar-mobile-header {
@@ -1553,6 +1553,7 @@
         box-shadow: 8px 0 32px rgba(0, 0, 0, 0.8) !important;
         transform: translateX(-100%);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        justify-content: flex-start !important; /* Override space-between so content stacks and scrolls */
       }
       [data-theme="light"] .sidebar {
         background: #ffffff !important;
@@ -1560,6 +1561,12 @@
       }
       .sidebar.open {
         transform: translateX(0) !important;
+      }
+      .sidebar-top {
+        flex-shrink: 0; /* Prevent flex from collapsing content — needed for scroll to work */
+      }
+      .sidebar-auth-card {
+        flex-shrink: 0;
       }
       .sidebar-mobile-header {
         display: flex;
