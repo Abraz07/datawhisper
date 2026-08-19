@@ -1589,17 +1589,19 @@
       .code-viewer { font-size: 11px; padding: 10px; }
 
       .input-dock {
-        padding: 8px 12px max(10px, env(safe-area-inset-bottom, 10px));
-        background: rgba(8, 13, 26, 0.96);
+        padding: 8px 12px env(safe-area-inset-bottom, 8px);
+        background: rgba(8, 13, 26, 0.97);
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
         border-top: 1px solid rgba(255, 255, 255, 0.08);
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.4);
         flex-shrink: 0;
-        z-index: 30;
+        position: sticky;
+        bottom: 0;
+        z-index: 50;
       }
       [data-theme="light"] .input-dock {
-        background: rgba(255, 255, 255, 0.96);
+        background: rgba(255, 255, 255, 0.97);
         border-top: 1px solid rgba(0, 0, 0, 0.08);
         box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.05);
       }
@@ -1615,7 +1617,7 @@
         border: 1px solid rgba(0, 0, 0, 0.12);
       }
       .input-box textarea {
-        font-size: 14px;
+        font-size: 16px; /* 16px prevents iOS auto-zoom on focus */
         min-height: 24px;
         max-height: 80px;
         padding: 4px 0;
@@ -1635,6 +1637,13 @@
       }
       .input-shortcuts {
         display: none;
+      }
+      .chat-workspace {
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        flex: 1 1 0%;
+        overflow: hidden;
       }
 
       .hero-container {
