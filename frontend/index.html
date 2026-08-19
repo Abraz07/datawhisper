@@ -525,6 +525,11 @@
       position: relative;
       z-index: 2;
     }
+    [data-theme="light"] .sidebar {
+      background: rgba(255, 255, 255, 0.88);
+      border-right: 1px solid rgba(0, 0, 0, 0.08);
+      box-shadow: 4px 0 24px rgba(0, 0, 0, 0.06);
+    }
 
     .sidebar-top {
       display: flex;
@@ -1453,16 +1458,24 @@
 
     @media (max-width: 768px) {
       header {
-        height: 52px;
+        height: 56px;
         padding: 0 12px;
       }
       .brand-text { font-size: 15px; }
       .brand-badge { display: none; }
+      .brand-logo-img { width: 28px; height: 28px; border-radius: 7px; }
       
-      .status-pill { display: none; }
+      .status-pill { display: none !important; }
+      .accent-bar { display: none !important; }
+      .header-btn-report { display: none !important; }
+      .header-btn-reload { display: none !important; }
+      .header-btn-trash { display: none !important; }
 
       .header-actions {
+        display: flex;
+        align-items: center;
         gap: 6px;
+        flex-shrink: 0;
       }
       .header-btn {
         height: 32px;
@@ -1470,20 +1483,25 @@
         font-size: 11px;
       }
       .header-btn .btn-text {
-        display: none;
+        display: none !important;
+      }
+      .auth-btn-header {
+        height: 32px !important;
+        padding: 0 10px !important;
+        font-size: 12px !important;
+      }
+      .auth-btn-header .btn-text {
+        display: inline !important;
       }
       .icon-btn {
         width: 32px;
         height: 32px;
       }
-      .accent-bar {
-        padding: 3px 6px;
-        gap: 5px;
-        margin-right: 2px;
+      .user-pill {
+        padding: 2px 6px 2px 2px;
       }
-      .swatch-btn {
-        width: 14px;
-        height: 14px;
+      .user-email-text {
+        display: none;
       }
 
       .app-workspace {
@@ -1507,15 +1525,21 @@
       .sidebar {
         position: fixed;
         left: 0;
-        top: 52px;
+        top: 56px;
         bottom: 0;
-        width: 84%;
-        max-width: 300px;
-        background: var(--surface-elevated);
-        z-index: 60;
-        box-shadow: 4px 0 24px rgba(0, 0, 0, 0.4);
+        width: 86%;
+        max-width: 320px;
+        background: rgba(8, 13, 26, 0.96);
+        backdrop-filter: blur(24px);
+        -webkit-backdrop-filter: blur(24px);
+        z-index: 80;
+        box-shadow: 4px 0 28px rgba(0, 0, 0, 0.6);
         transform: translateX(-100%);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+      }
+      [data-theme="light"] .sidebar {
+        background: rgba(255, 255, 255, 0.96);
+        box-shadow: 4px 0 28px rgba(0, 0, 0, 0.15);
       }
       .sidebar.open {
         transform: translateX(0);
@@ -1527,11 +1551,11 @@
       .sidebar-backdrop {
         display: block;
         position: fixed;
-        inset: 52px 0 0 0;
-        background: rgba(0, 0, 0, 0.6);
+        inset: 56px 0 0 0;
+        background: rgba(0, 0, 0, 0.65);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
-        z-index: 55;
+        z-index: 75;
       }
 
       .mobile-sidebar-toggle {
@@ -3257,7 +3281,7 @@ function App() {
           )}
 
           {session && (
-            <button className="header-btn" onClick={exportExecutiveReport} title="Print or export executive analysis report">
+            <button className="header-btn header-btn-report" onClick={exportExecutiveReport} title="Print or export executive analysis report">
               <Icons.FileText /><span className="btn-text"> Report</span>
             </button>
           )}
@@ -3267,7 +3291,7 @@ function App() {
           </button>
 
           {session && (
-            <button className="icon-btn" onClick={clearChat} title="Clear conversation history">
+            <button className="icon-btn header-btn-trash" onClick={clearChat} title="Clear conversation history">
               <Icons.Trash />
             </button>
           )}
@@ -3276,7 +3300,7 @@ function App() {
             {theme === 'dark' ? <Icons.Sun /> : <Icons.Moon />}
           </button>
 
-          <button className="icon-btn" onClick={handleRefresh} title="Reload page">
+          <button className="icon-btn header-btn-reload" onClick={handleRefresh} title="Reload page">
             <Icons.Reload />
           </button>
 
@@ -3341,8 +3365,17 @@ function App() {
         <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
           <div className="sidebar-top">
             <div className="sidebar-mobile-header">
-              <h4>Dataset Inspector</h4>
-              <button className="icon-btn" style={{width: '28px', height: '28px'}} onClick={() => setSidebarOpen(false)}>✕</button>
+              <div>
+                <h4 style={{fontSize: '13px', fontWeight: 700, marginBottom: '6px'}}>Dataset Inspector</h4>
+                <div style={{display: 'flex', gap: '4px'}}>
+                  <button className={`swatch-btn swatch-emerald ${accent === 'emerald' ? 'active' : ''}`} onClick={() => setAccent('emerald')} />
+                  <button className={`swatch-btn swatch-iris ${accent === 'iris' ? 'active' : ''}`} onClick={() => setAccent('iris')} />
+                  <button className={`swatch-btn swatch-cyan ${accent === 'cyan' ? 'active' : ''}`} onClick={() => setAccent('cyan')} />
+                  <button className={`swatch-btn swatch-amber ${accent === 'amber' ? 'active' : ''}`} onClick={() => setAccent('amber')} />
+                  <button className={`swatch-btn swatch-cobalt ${accent === 'cobalt' ? 'active' : ''}`} onClick={() => setAccent('cobalt')} />
+                </div>
+              </div>
+              <button className="icon-btn" style={{width: '30px', height: '30px'}} onClick={() => setSidebarOpen(false)}>✕</button>
             </div>
 
             <div className="sidebar-section">
