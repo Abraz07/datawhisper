@@ -386,21 +386,27 @@ def run_analytical_query(session, question: str) -> QueryResponse:
     summary = session["summary"]
     history = session["history"]
 
-    system_prompt = f"""You are DataWhisper, an expert data analyst AI.
-Dataset: '{session["filename"]}'
-Summary:
+    system_prompt = f"""You are Queryza, an intelligent AI conversational studio and data analyst.
+Loaded Dataset: '{session["filename"]}' ({df.shape[0]:,} rows x {df.shape[1]} columns)
+Columns: {list(df.columns)}
+
+Dataset Summary:
 {summary}
 
-Rules:
-- df is already loaded. NEVER reload it.
-- Use only pd, np, px, go. No matplotlib. No other imports.
-- ALWAYS assign the final answer to result. NEVER use print(). NEVER leave result as None.
-- For charts: assign to fig using px or go with template=plotly_dark and color_discrete_sequence=["#6366f1"].
-- When making bar charts, use value_counts() for categorical columns.
-- Always wrap code in ```python``` blocks.
-- After the code, write ONE sentence describing what you calculated. Do NOT include numbers — just describe the calculation.
-- Example good explanation: "I counted the number of unique values in the First Name column."
-- Example bad explanation: "There are 690 unique values." (never put numbers in explanation)"""
+GUIDELINES:
+1. DATASET QUERIES (Filtering, computing metrics, aggregating, or visualizing the loaded dataset 'df'):
+   - Generate executable Python code to compute the result from 'df'.
+   - 'df' is already loaded in memory (pandas DataFrame). Do not reload it.
+   - Use only pd, np, px, go. No other imports.
+   - Assign final computed result to `result` (can be DataFrame, Series, scalar number, or string) OR assign Plotly figure to `fig` (using px or go with template='plotly_dark').
+   - Wrap the execution code in a ```python:execute``` block.
+   - After the code, write ONE concise sentence describing what you calculated (do NOT put numbers in the explanation).
+
+2. GENERAL / PROGRAMMING / STATS / CONVERSATIONAL QUERIES (Questions about algorithms like BFS/DFS, Python concepts, statistics theory, greetings, or general questions NOT analyzing the rows of 'df'):
+   - Do NOT use ```python:execute```.
+   - Answer conversationally, clearly, and helpfully in standard Markdown.
+   - You can include standard ```python code blocks to demonstrate algorithms, syntax, or concepts — these will be displayed cleanly to the user without executing against 'df'.
+   - Do NOT force arbitrary operations on 'df' for general questions."""
 
     conversation = "\n".join([f"{h['role']}: {h['content']}" for h in history[-4:]])
     user_prompt = f"Previous conversation:\n{conversation}\n\nuser: {question}"
@@ -411,49 +417,78 @@ Rules:
         print(f"REAL ERROR: {e}")
         raise HTTPException(status_code=500, detail=f"LLM error: {e}")
 
-    code = extract_code(llm_response)
-    explanation = re.sub(r"```.*?```", "", llm_response, flags=re.DOTALL).strip() or "Here is the result."
-    result, chart_json, table_data, exec_error = safe_execute(code, df)
+    # Check for executable dataset code
+    exec_code_match = re.search(r"```python:execute\n(.*?)```", llm_response, re.DOTALL)
+    if exec_code_match:
+        code = exec_code_match.group(1).strip()
+        explanation = re.sub(r"```python:execute.*?```", "", llm_response, flags=re.DOTALL).strip() or "Here is the result."
+        result, chart_json, table_data, exec_error = safe_execute(code, df)
 
-    retries = 0
-    while exec_error and retries < MAX_CODE_RETRIES:
-        retry_prompt = f"""The user asked: "{question}"
+        retries = 0
+        while exec_error and retries < MAX_CODE_RETRIES:
+            retry_prompt = f"""The user asked: "{question}"
 
 You generated this code:
-```python
+```python:execute
 {code}
 ```
 
 It failed with this error:
 {exec_error}
 
-Fix the code. df is already loaded — do not reload it.
-Use only pd, np, px, go. Assign the final answer to result.
-Always wrap code in ```python``` blocks.
-After the code, write ONE sentence describing what you calculated (no numbers in the explanation)."""
-        try:
-            llm_response = generate_llm_code(system_prompt, retry_prompt)
-        except Exception as e:
-            break
-        code = extract_code(llm_response)
-        explanation = re.sub(r"```.*?```", "", llm_response, flags=re.DOTALL).strip() or explanation
-        result, chart_json, table_data, exec_error = safe_execute(code, df)
-        retries += 1
+Fix the code. 'df' is already loaded — do not reload it.
+Use only pd, np, px, go. Assign the final answer to `result` or `fig`.
+Wrap the code in ```python:execute``` blocks.
+After the code, write ONE sentence describing what you calculated."""
+            try:
+                llm_response = generate_llm_code(system_prompt, retry_prompt)
+            except Exception as e:
+                break
+            new_match = re.search(r"```python:execute\n(.*?)```", llm_response, re.DOTALL)
+            if new_match:
+                code = new_match.group(1).strip()
+                explanation = re.sub(r"```python:execute.*?```", "", llm_response, flags=re.DOTALL).strip() or explanation
+                result, chart_json, table_data, exec_error = safe_execute(code, df)
+            else:
+                break
+            retries += 1
 
+        session["history"].append({"role": "user", "content": question})
+        session["history"].append({"role": "assistant", "content": explanation})
+
+        if exec_error:
+            return QueryResponse(answer=explanation, code=code, error=f"Execution error: {exec_error}")
+
+        if result is None and table_data is not None:
+            answer = "Here's what I found:"
+        elif result is None and chart_json is not None:
+            answer = "Here's the chart:"
+        else:
+            answer = build_final_answer(explanation, result, question)
+
+        return QueryResponse(answer=answer, code=code, chart=chart_json, table=table_data)
+
+    # Fallback: If model used standard ```python``` and explicitly calculated df operations
+    standard_code = extract_code(llm_response)
+    if standard_code and ("df[" in standard_code or "df." in standard_code) and ("result =" in standard_code or "fig =" in standard_code):
+        explanation = re.sub(r"```.*?```", "", llm_response, flags=re.DOTALL).strip() or "Here is the result."
+        result, chart_json, table_data, exec_error = safe_execute(standard_code, df)
+        if not exec_error and (result is not None or chart_json is not None or table_data is not None):
+            session["history"].append({"role": "user", "content": question})
+            session["history"].append({"role": "assistant", "content": explanation})
+            if result is None and table_data is not None:
+                answer = "Here's what I found:"
+            elif result is None and chart_json is not None:
+                answer = "Here's the chart:"
+            else:
+                answer = build_final_answer(explanation, result, question)
+            return QueryResponse(answer=answer, code=standard_code, chart=chart_json, table=table_data)
+
+    # GENERAL / CHAT / EXPLANATORY RESPONSE (No dataset execution)
+    answer = llm_response.strip()
     session["history"].append({"role": "user", "content": question})
-    session["history"].append({"role": "assistant", "content": explanation})
-
-    if exec_error:
-        return QueryResponse(answer=explanation, code=code, error=f"Execution error: {exec_error}")
-
-    if result is None and table_data is not None:
-        answer = "Here's what I found:"
-    elif result is None and chart_json is not None:
-        answer = "Here's the chart:"
-    else:
-        answer = build_final_answer(explanation, result, question)
-
-    return QueryResponse(answer=answer, code=code, chart=chart_json, table=table_data)
+    session["history"].append({"role": "assistant", "content": answer})
+    return QueryResponse(answer=answer, code="")
 
 @app.post("/upload")
 async def upload_file(file: UploadFile = File(...), sheet: str | None = Form(None)):
