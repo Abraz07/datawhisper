@@ -1511,6 +1511,8 @@
         min-height: 0;
         height: auto;
         overflow: hidden;
+        position: static !important;
+        z-index: auto !important;
       }
 
       .chat-workspace {
@@ -1520,29 +1522,30 @@
         min-height: 0;
         overflow: hidden;
         position: relative;
+        z-index: 1;
       }
 
       .sidebar {
-        position: fixed;
+        position: fixed !important;
         left: 0;
         top: 56px;
         bottom: 0;
         width: 86%;
         max-width: 320px;
-        background: rgba(8, 13, 26, 0.96);
+        background: #080d1a !important;
         backdrop-filter: blur(24px);
         -webkit-backdrop-filter: blur(24px);
-        z-index: 80;
-        box-shadow: 4px 0 28px rgba(0, 0, 0, 0.6);
+        z-index: 120 !important;
+        box-shadow: 8px 0 32px rgba(0, 0, 0, 0.8) !important;
         transform: translateX(-100%);
         transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
       }
       [data-theme="light"] .sidebar {
-        background: rgba(255, 255, 255, 0.96);
-        box-shadow: 4px 0 28px rgba(0, 0, 0, 0.15);
+        background: #ffffff !important;
+        box-shadow: 8px 0 32px rgba(0, 0, 0, 0.15) !important;
       }
       .sidebar.open {
-        transform: translateX(0);
+        transform: translateX(0) !important;
       }
       .sidebar-mobile-header {
         display: flex;
@@ -1552,13 +1555,13 @@
         display: block;
         position: fixed;
         inset: 56px 0 0 0;
-        background: rgba(0, 0, 0, 0.65);
+        background: rgba(0, 0, 0, 0.7);
         backdrop-filter: blur(4px);
         -webkit-backdrop-filter: blur(4px);
-        z-index: 75;
+        z-index: 100 !important;
       }
       [data-theme="light"] .sidebar-backdrop {
-        background: rgba(15, 23, 42, 0.35);
+        background: rgba(15, 23, 42, 0.4);
       }
 
       .mobile-sidebar-toggle {
