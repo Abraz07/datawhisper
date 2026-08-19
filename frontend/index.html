@@ -858,6 +858,16 @@
       z-index: 1;
     }
 
+    /* Hero scroll wrapper - wraps hero content so it scrolls independently */
+    .hero-scroll-wrapper {
+      flex: 1 1 0%;
+      min-height: 0;
+      overflow-y: auto;
+      overflow-x: hidden;
+      -webkit-overflow-scrolling: touch;
+      overscroll-behavior-y: contain;
+    }
+
     .messages-stream {
       flex: 1 1 0%;
       overflow-y: auto;
@@ -3550,6 +3560,7 @@ function App() {
         {/* Chat / Analysis Canvas */}
         <main className="chat-workspace">
           {!session ? (
+            <div className="hero-scroll-wrapper">
             <div className="hero-container">
               <div className="hero-logo-wrapper">
                 <img src="logo.jpg" alt="Queryza Studio" className="hero-logo-img" />
@@ -3594,6 +3605,7 @@ function App() {
                   ))}
                 </div>
               </div>
+            </div>
             </div>
           ) : (
             <>
