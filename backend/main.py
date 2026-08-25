@@ -212,9 +212,21 @@ def extract_code(text):
 def safe_execute(code, df):
     if not code.strip():
         return None, None, None, None
+    # Block dangerous modules and introspection
+    forbidden_tokens = ["import os", "import sys", "import subprocess", "import shutil", "import socket", "open(", "__import__", "eval(", "exec(", "globals()", "locals()", "os.environ", "shutil.", "subprocess."]
+    if any(token in code for token in forbidden_tokens):
+        return None, None, None, "Execution of unauthorized operations or system libraries is blocked by sandbox security policy."
+
+    safe_builtins = {
+        "abs": abs, "all": all, "any": any, "bool": bool, "dict": dict, "enumerate": enumerate,
+        "filter": filter, "float": float, "int": int, "isinstance": isinstance, "len": len,
+        "list": list, "map": map, "max": max, "min": min, "pow": pow, "range": range,
+        "round": round, "set": set, "slice": slice, "sorted": sorted, "str": str, "sum": sum,
+        "tuple": tuple, "zip": zip, "True": True, "False": False, "None": None
+    }
     local_vars = {"df": df.copy(), "pd": pd, "np": np, "px": px, "go": go, "result": None, "fig": None}
     try:
-        exec(code, {"__builtins__": __builtins__}, local_vars)
+        exec(code, {"__builtins__": safe_builtins}, local_vars)
     except Exception as e:
         return None, None, None, str(e)
     result = local_vars.get("result")
